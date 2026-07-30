@@ -142,18 +142,21 @@ export const translationCatalogs = {
         fabricationParameter: 'Decisión de fabricación',
         ruleReferencesTitle: 'Fuente reglamentaria',
         constructionAdviceTitle: 'Consejo de construcción',
-        elementCount_one: '{{count}} elemento',
-        elementCount_other: '{{count}} elementos',
-        findings: {
-          minimumTilesTitle: 'Faltan baldosas para el mínimo reglamentario',
-          minimumTilesDescription_one:
-            'Hay {{count}} baldosa; la pista debe contener al menos 8 sin contar inicio y meta.',
-          minimumTilesDescription_other:
-            'Hay {{count}} baldosas; la pista debe contener al menos 8 sin contar inicio y meta.',
-          readyTitle: 'Estructura inicial preparada',
-          readyDescription:
-            'El panel de validación detallada se actualizará mientras construyes la pista.',
-        },
+      },
+      validation: {
+        panelLabel: 'Validación reglamentaria',
+        errorSummary_one: '{{count}} error requiere corrección',
+        errorSummary_other: '{{count}} errores requieren corrección',
+        readySummary: 'Sin errores reglamentarios automáticos',
+        summaryErrors_one: '{{count}} error',
+        summaryErrors_other: '{{count}} errores',
+        summaryWarnings_one: '{{count}} advertencia',
+        summaryWarnings_other: '{{count}} advertencias',
+        summaryManualChecks_one: '{{count}} revisión manual',
+        summaryManualChecks_other: '{{count}} revisiones manuales',
+        showFindings: 'Ver comprobaciones',
+        hideFindings: 'Ocultar comprobaciones',
+        locateElement: 'Ubicar',
       },
       dimensions: {
         widthMm: 'Ancho',
@@ -369,17 +372,21 @@ export const translationCatalogs = {
         fabricationParameter: 'Fabrication decision',
         ruleReferencesTitle: 'Rules source',
         constructionAdviceTitle: 'Construction advice',
-        elementCount_one: '{{count}} element',
-        elementCount_other: '{{count}} elements',
-        findings: {
-          minimumTilesTitle: 'More tiles are needed for the rules minimum',
-          minimumTilesDescription_one:
-            'There is {{count}} tile; a course needs at least 8 excluding start and finish.',
-          minimumTilesDescription_other:
-            'There are {{count}} tiles; a course needs at least 8 excluding start and finish.',
-          readyTitle: 'Initial structure ready',
-          readyDescription: 'The detailed validation panel will update as you build the track.',
-        },
+      },
+      validation: {
+        panelLabel: 'Rules validation',
+        errorSummary_one: '{{count}} error needs correction',
+        errorSummary_other: '{{count}} errors need correction',
+        readySummary: 'No automated rules errors',
+        summaryErrors_one: '{{count}} error',
+        summaryErrors_other: '{{count}} errors',
+        summaryWarnings_one: '{{count}} warning',
+        summaryWarnings_other: '{{count}} warnings',
+        summaryManualChecks_one: '{{count}} manual check',
+        summaryManualChecks_other: '{{count}} manual checks',
+        showFindings: 'Show checks',
+        hideFindings: 'Hide checks',
+        locateElement: 'Locate',
       },
       dimensions: {
         widthMm: 'Width',

@@ -787,7 +787,7 @@
       "section": "3.10",
       "page": 18,
       "tolerance": null,
-      "validationMode": "manual"
+      "validationMode": "automated"
     },
     {
       "id": "victim.deadCount",
@@ -798,6 +798,21 @@
       },
       "value": 1,
       "unit": "count",
+      "ruleType": "normative",
+      "section": "3.10",
+      "page": 18,
+      "tolerance": null,
+      "validationMode": "automated"
+    },
+    {
+      "id": "victim.randomPlacement",
+      "title": { "es": "Colocación aleatoria de víctimas", "en": "Random victim placement" },
+      "description": {
+        "es": "Los organizadores colocan las víctimas aleatoriamente en la zona de evacuación.",
+        "en": "Organizers place the victims randomly in the evacuation zone."
+      },
+      "value": true,
+      "unit": "none",
       "ruleType": "normative",
       "section": "3.10",
       "page": 18,

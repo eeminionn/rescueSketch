@@ -51,6 +51,7 @@ describe('RoboCupJunior Rescue Line 2026 ruleset', () => {
       'victim.weightMaxGram': 80,
       'victim.livingCount': 2,
       'victim.deadCount': 1,
+      'victim.randomPlacement': true,
       'field.measurementToleranceRatio': 0.1,
     };
 

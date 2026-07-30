@@ -50,6 +50,8 @@ export const trackStructureSchema = z
       'obstacle',
       'speedBump',
       'debris',
+      'livingSafePoint',
+      'deadSafePoint',
     ]),
     levelId: identifierSchema,
     position: pointSchema,
