@@ -78,4 +78,43 @@ describe('TrackDocumentV1', () => {
 
     expect(trackDocumentV1Schema.safeParse(invalidDocument).success).toBe(false);
   });
+
+  it('migrates v0.2 safe-point tiles into structures before validation', () => {
+    const document = createEmptyTrackDocument(acceptedAt);
+    const legacyDocument = {
+      ...document,
+      tiles: [
+        {
+          id: 'safe-point-1',
+          catalogItemId: 'livingSafePoint',
+          levelId: 'level-0',
+          position: { x: 300, y: 600 },
+          rotation: 1,
+          geometry: [],
+          parameters: {
+            legLengthMm: 300,
+            wallWidthMm: 60,
+          },
+        },
+      ],
+    };
+    const migratedDocument = parseTrackDocument(legacyDocument);
+
+    expect(migratedDocument.tiles).toEqual([]);
+    expect(migratedDocument.structures).toEqual([
+      {
+        id: 'safe-point-1',
+        kind: 'livingSafePoint',
+        levelId: 'level-0',
+        position: { x: 300, y: 600 },
+        rotation: 1,
+        geometry: [],
+        parameters: {
+          legLengthMm: 300,
+          wallWidthMm: 60,
+        },
+      },
+    ]);
+    expect(parseTrackDocument(migratedDocument)).toEqual(migratedDocument);
+  });
 });

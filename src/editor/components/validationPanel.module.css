@@ -1,0 +1,167 @@
+.validationPanel {
+  --validationAccent: #5b8877;
+
+  background: #faf9f3;
+  border-top: 1px solid rgb(16 35 31 / 12%);
+  color: #10231f;
+  min-width: 0;
+  position: relative;
+  z-index: 7;
+}
+
+.validationPanel[data-severity='error'] {
+  --validationAccent: #c45347;
+}
+
+.validationPanel[data-severity='warning'] {
+  --validationAccent: #d98b35;
+}
+
+.validationPanel[data-severity='manual'] {
+  --validationAccent: #4d806d;
+}
+
+.validationPanel[data-expanded] {
+  box-shadow: 0 -14px 38px rgb(16 35 31 / 12%);
+}
+
+.summary {
+  align-items: center;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  min-height: 60px;
+  padding: 8px 15px;
+}
+
+.summaryIcon,
+.findingIcon {
+  align-items: center;
+  background: color-mix(in srgb, var(--validationAccent) 16%, transparent);
+  border-radius: 50%;
+  color: var(--validationAccent);
+  display: inline-flex;
+  flex: none;
+  font-size: 0.68rem;
+  font-weight: 900;
+  height: 22px;
+  justify-content: center;
+  width: 22px;
+}
+
+.summary strong {
+  display: block;
+  font-size: 0.68rem;
+}
+
+.summary p {
+  color: #697974;
+  font-size: 0.58rem;
+  margin: 2px 0 0;
+}
+
+.expandButton {
+  align-items: center;
+  background: transparent;
+  border: 1px solid rgb(16 35 31 / 14%);
+  border-radius: 7px;
+  color: #445b54;
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 0.58rem;
+  font-weight: 720;
+  gap: 7px;
+  min-height: 31px;
+  padding: 0 9px;
+}
+
+.expandButton:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.findingList {
+  background: #f4f3ed;
+  border-top: 1px solid rgb(16 35 31 / 10%);
+  bottom: 60px;
+  display: grid;
+  gap: 6px;
+  left: 0;
+  max-height: min(45vh, 390px);
+  overflow-y: auto;
+  padding: 10px 14px;
+  position: absolute;
+  right: 0;
+}
+
+.findingList article {
+  --findingColor: #62746e;
+
+  align-items: start;
+  background: #fffef9;
+  border: 1px solid rgb(16 35 31 / 10%);
+  border-left: 3px solid var(--findingColor);
+  border-radius: 8px;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  padding: 9px;
+}
+
+.findingList article[data-severity='error'] {
+  --findingColor: #c45347;
+}
+
+.findingList article[data-severity='warning'] {
+  --findingColor: #d98b35;
+}
+
+.findingList article[data-severity='manual'] {
+  --findingColor: #4d806d;
+}
+
+.findingList article[data-severity='info'] {
+  --findingColor: #5f7892;
+}
+
+.findingList .findingIcon {
+  background: color-mix(in srgb, var(--findingColor) 15%, transparent);
+  color: var(--findingColor);
+}
+
+.findingList strong {
+  display: block;
+  font-size: 0.65rem;
+  line-height: 1.35;
+}
+
+.findingList p {
+  color: #667872;
+  font-size: 0.57rem;
+  line-height: 1.4;
+  margin: 3px 0 5px;
+}
+
+.findingList small {
+  color: #3c7866;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.5rem;
+}
+
+.findingList article > button {
+  background: transparent;
+  border: 1px solid rgb(16 35 31 / 16%);
+  border-radius: 6px;
+  color: #425952;
+  cursor: pointer;
+  font-size: 0.54rem;
+  min-height: 28px;
+  padding: 0 7px;
+}
+
+@media (forced-colors: active) {
+  .validationPanel,
+  .findingList article {
+    border-color: CanvasText;
+  }
+}

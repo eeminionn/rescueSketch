@@ -35,10 +35,12 @@ import {
   type TrackStructure,
 } from '../../domain';
 import { rescueSketchI18n, type AppLanguage } from '../../i18n';
+import { validateTrackDocument } from '../../validation';
 import { useEditorRecovery } from '../recovery';
 import { CatalogSvg } from '../rendering';
 import { createEditorStore, type EditorStore } from '../state';
 import styles from './editorWorkspace.module.css';
+import { ValidationPanel } from './ValidationPanel';
 
 const categoryOrder: readonly CatalogCategory[] = [
   'line',
@@ -59,6 +61,8 @@ const structureKindByCatalogItemId: Readonly<Record<string, TrackStructure['kind
   obstacle: 'obstacle',
   speedBump: 'speedBump',
   debris: 'debris',
+  livingSafePoint: 'livingSafePoint',
+  deadSafePoint: 'deadSafePoint',
 };
 
 const minimumZoom = 0.45;
@@ -607,6 +611,7 @@ export function EditorWorkspace({
       ].filter(({ levelId }) => levelId === activeLevelId),
     [activeLevelId, document.structures, document.tiles],
   );
+  const validationReport = useMemo(() => validateTrackDocument(document), [document]);
 
   const { saveNow, status: recoveryStatus } = useEditorRecovery({
     trackId,
@@ -769,9 +774,6 @@ export function EditorWorkspace({
     '--canvas-height': `${(document.canvas.heightMm / 3) * zoom}px`,
     '--canvas-width': `${(document.canvas.widthMm / 3) * zoom}px`,
   } as CSSProperties;
-  const tileCount = document.tiles.length;
-  const isUnderMinimum = tileCount < 8;
-
   return (
     <DndContext
       onDragCancel={() => {
@@ -1083,31 +1085,13 @@ export function EditorWorkspace({
                 </svg>
               </div>
 
-              <div className={styles.findingsPanel} role="status">
-                <div>
-                  <span
-                    aria-hidden="true"
-                    className={isUnderMinimum ? styles.warningDot : styles.validDot}
-                  />
-                  <strong>
-                    {isUnderMinimum
-                      ? t('editor.findings.minimumTilesTitle')
-                      : t('editor.findings.readyTitle')}
-                  </strong>
-                  <p>
-                    {isUnderMinimum
-                      ? t('editor.findings.minimumTilesDescription', {
-                          count: tileCount,
-                        })
-                      : t('editor.findings.readyDescription')}
-                  </p>
-                </div>
-                <span className={styles.findingsMeta}>
-                  {t('editor.elementCount', {
-                    count: document.tiles.length + document.structures.length,
-                  })}
-                </span>
-              </div>
+              <ValidationPanel
+                onSelectElement={(elementId) => {
+                  editorStore.getState().setSelection([elementId]);
+                  setInspectorOpen(true);
+                }}
+                report={validationReport}
+              />
             </section>
 
             {inspectorOpen ? (
