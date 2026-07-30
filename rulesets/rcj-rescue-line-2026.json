@@ -1,0 +1,823 @@
+{
+  "rulesetVersion": "2026.1",
+  "publishedAt": "2026-03-29",
+  "officialLanguage": "en",
+  "informativeLanguages": ["es"],
+  "source": {
+    "title": "RoboCupJunior Rescue Line Rules 2026",
+    "revision": "2026-03-29",
+    "sha256": "d1a60d29269245a307b0a0023ebdb3c8bca464a2b7616b0482b5bcee5398d9e6",
+    "language": "en",
+    "url": "https://junior.robocup.org/wp-content/uploads/2026/02/RCJRescueLine2026-final.pdf"
+  },
+  "disclaimer": {
+    "es": "Paráfrasis informativa de un proyecto comunitario no oficial. El reglamento inglés y las decisiones de oficiales prevalecen.",
+    "en": "Informative paraphrase by an unofficial community project. The English rules and officials' decisions prevail."
+  },
+  "entries": [
+    {
+      "id": "field.tileWidthMm",
+      "title": { "es": "Ancho nominal de baldosa", "en": "Nominal tile width" },
+      "description": {
+        "es": "Las baldosas del campo miden nominalmente 300 mm de ancho.",
+        "en": "Field tiles are nominally 300 mm wide."
+      },
+      "value": 300,
+      "unit": "mm",
+      "ruleType": "normative",
+      "section": "3.1",
+      "page": 13,
+      "tolerance": 0.1,
+      "validationMode": "automated"
+    },
+    {
+      "id": "field.tileHeightMm",
+      "title": { "es": "Alto nominal de baldosa", "en": "Nominal tile height" },
+      "description": {
+        "es": "Las baldosas del campo miden nominalmente 300 mm de alto.",
+        "en": "Field tiles are nominally 300 mm high."
+      },
+      "value": 300,
+      "unit": "mm",
+      "ruleType": "normative",
+      "section": "3.1",
+      "page": 13,
+      "tolerance": 0.1,
+      "validationMode": "automated"
+    },
+    {
+      "id": "field.minimumCourseTiles",
+      "title": { "es": "Mínimo de baldosas", "en": "Minimum course tiles" },
+      "description": {
+        "es": "El campo tiene al menos ocho baldosas, sin contar inicio y meta.",
+        "en": "The field has at least eight tiles, excluding start and goal."
+      },
+      "value": 8,
+      "unit": "count",
+      "ruleType": "normative",
+      "section": "3.1",
+      "page": 13,
+      "tolerance": null,
+      "validationMode": "automated"
+    },
+    {
+      "id": "floor.tileStepHeightMaxMm",
+      "title": { "es": "Desnivel máximo entre baldosas", "en": "Maximum tile step height" },
+      "description": {
+        "es": "Puede existir un desnivel de hasta 3 mm entre baldosas.",
+        "en": "A step of up to 3 mm may exist between tiles."
+      },
+      "value": 3,
+      "unit": "mm",
+      "ruleType": "normative",
+      "section": "3.2",
+      "page": 14,
+      "tolerance": 0.1,
+      "validationMode": "manual"
+    },
+    {
+      "id": "bridge.pillarWidthMaxMm",
+      "title": { "es": "Sección máxima de pilares", "en": "Maximum pillar cross-section" },
+      "description": {
+        "es": "Los pilares cuadrados de un puente tienen como máximo 25 × 25 mm.",
+        "en": "Square bridge pillars are at most 25 × 25 mm."
+      },
+      "value": 25,
+      "unit": "mm",
+      "ruleType": "normative",
+      "section": "3.2",
+      "page": 14,
+      "tolerance": 0.1,
+      "validationMode": "automated"
+    },
+    {
+      "id": "bridge.passageWidthMinMm",
+      "title": { "es": "Paso libre mínimo de puente", "en": "Minimum bridge passage width" },
+      "description": {
+        "es": "Cada entrada o salida bajo un puente deja al menos 250 mm libres.",
+        "en": "Every bridge entrance or exit leaves at least 250 mm clear."
+      },
+      "value": 250,
+      "unit": "mm",
+      "ruleType": "normative",
+      "section": "3.2",
+      "page": 14,
+      "tolerance": 0.1,
+      "validationMode": "automated"
+    },
+    {
+      "id": "bridge.clearanceHeightMinMm",
+      "title": { "es": "Altura libre mínima de puente", "en": "Minimum bridge clearance height" },
+      "description": {
+        "es": "El espacio vertical libre bajo un puente es de al menos 250 mm.",
+        "en": "Vertical clearance beneath a bridge is at least 250 mm."
+      },
+      "value": 250,
+      "unit": "mm",
+      "ruleType": "normative",
+      "section": "3.2",
+      "page": 14,
+      "tolerance": 0.1,
+      "validationMode": "automated"
+    },
+    {
+      "id": "line.widthMinMm",
+      "title": { "es": "Ancho mínimo de línea", "en": "Minimum line width" },
+      "description": {
+        "es": "La línea negra mide al menos 10 mm de ancho.",
+        "en": "The black line is at least 10 mm wide."
+      },
+      "value": 10,
+      "unit": "mm",
+      "ruleType": "normative",
+      "section": "3.3",
+      "page": 14,
+      "tolerance": 0.1,
+      "validationMode": "automated"
+    },
+    {
+      "id": "line.widthMaxMm",
+      "title": { "es": "Ancho máximo de línea", "en": "Maximum line width" },
+      "description": {
+        "es": "La línea negra mide como máximo 20 mm de ancho.",
+        "en": "The black line is at most 20 mm wide."
+      },
+      "value": 20,
+      "unit": "mm",
+      "ruleType": "normative",
+      "section": "3.3",
+      "page": 14,
+      "tolerance": 0.1,
+      "validationMode": "automated"
+    },
+    {
+      "id": "line.straightBeforeGapMinMm",
+      "title": { "es": "Recta mínima antes de gap", "en": "Minimum straight before a gap" },
+      "description": {
+        "es": "Debe haber al menos 50 mm de línea recta antes de cada gap.",
+        "en": "At least 50 mm of straight line precedes each gap."
+      },
+      "value": 50,
+      "unit": "mm",
+      "ruleType": "normative",
+      "section": "3.3",
+      "page": 14,
+      "tolerance": 0.1,
+      "validationMode": "automated"
+    },
+    {
+      "id": "line.gapLengthMaxMm",
+      "title": { "es": "Longitud máxima de gap", "en": "Maximum gap length" },
+      "description": {
+        "es": "Un gap en una sección recta no supera 200 mm.",
+        "en": "A gap on a straight section does not exceed 200 mm."
+      },
+      "value": 200,
+      "unit": "mm",
+      "ruleType": "normative",
+      "section": "3.3",
+      "page": 14,
+      "tolerance": 0.1,
+      "validationMode": "automated"
+    },
+    {
+      "id": "line.clearanceMinMm",
+      "title": { "es": "Separación mínima de la línea", "en": "Minimum line clearance" },
+      "description": {
+        "es": "La línea mantiene al menos 100 mm respecto de bordes y elementos que no están en su recorrido.",
+        "en": "The line remains at least 100 mm from edges and elements that are not in its path."
+      },
+      "value": 100,
+      "unit": "mm",
+      "ruleType": "normative",
+      "section": "3.3",
+      "page": 14,
+      "tolerance": 0.1,
+      "validationMode": "automated"
+    },
+    {
+      "id": "goalTape.widthMm",
+      "title": { "es": "Ancho de cinta de meta", "en": "Goal tape width" },
+      "description": {
+        "es": "La cinta roja de meta mide 25 mm de ancho.",
+        "en": "The red goal tape is 25 mm wide."
+      },
+      "value": 25,
+      "unit": "mm",
+      "ruleType": "normative",
+      "section": "3.3",
+      "page": 14,
+      "tolerance": 0.1,
+      "validationMode": "automated"
+    },
+    {
+      "id": "goalTape.lengthMm",
+      "title": { "es": "Largo de cinta de meta", "en": "Goal tape length" },
+      "description": {
+        "es": "La cinta roja atraviesa 300 mm en el centro de la baldosa.",
+        "en": "The red tape spans 300 mm through the centre of the tile."
+      },
+      "value": 300,
+      "unit": "mm",
+      "ruleType": "normative",
+      "section": "3.3",
+      "page": 14,
+      "tolerance": 0.1,
+      "validationMode": "automated"
+    },
+    {
+      "id": "checkpointMarker.thicknessMinMm",
+      "title": {
+        "es": "Espesor mínimo usual del checkpoint",
+        "en": "Usual minimum checkpoint thickness"
+      },
+      "description": {
+        "es": "La guía describe discos usados frecuentemente desde 5 mm de espesor; el organizador puede variar el marcador.",
+        "en": "The guidance describes frequently used disks from 5 mm thick; the organizer may vary the marker."
+      },
+      "value": 5,
+      "unit": "mm",
+      "ruleType": "advice",
+      "section": "3.4",
+      "page": 15,
+      "tolerance": null,
+      "validationMode": "informational"
+    },
+    {
+      "id": "checkpointMarker.thicknessMaxMm",
+      "title": {
+        "es": "Espesor máximo usual del checkpoint",
+        "en": "Usual maximum checkpoint thickness"
+      },
+      "description": {
+        "es": "La guía describe discos usados frecuentemente de hasta 12 mm; el organizador puede variar el marcador.",
+        "en": "The guidance describes frequently used disks up to 12 mm thick; the organizer may vary the marker."
+      },
+      "value": 12,
+      "unit": "mm",
+      "ruleType": "advice",
+      "section": "3.4",
+      "page": 15,
+      "tolerance": null,
+      "validationMode": "informational"
+    },
+    {
+      "id": "checkpointMarker.diameterMaxMm",
+      "title": {
+        "es": "Diámetro máximo usual del checkpoint",
+        "en": "Usual maximum checkpoint diameter"
+      },
+      "description": {
+        "es": "La guía describe discos usados frecuentemente de hasta 70 mm; el organizador puede variar el marcador.",
+        "en": "The guidance describes frequently used disks up to 70 mm in diameter; the organizer may vary the marker."
+      },
+      "value": 70,
+      "unit": "mm",
+      "ruleType": "advice",
+      "section": "3.4",
+      "page": 15,
+      "tolerance": null,
+      "validationMode": "informational"
+    },
+    {
+      "id": "speedBump.widthMaxMm",
+      "title": { "es": "Ancho máximo de speed bump", "en": "Maximum speed bump width" },
+      "description": {
+        "es": "Un speed bump no supera el ancho de una baldosa.",
+        "en": "A speed bump does not exceed one tile in width."
+      },
+      "value": 300,
+      "unit": "mm",
+      "ruleType": "normative",
+      "section": "3.5",
+      "page": 15,
+      "tolerance": 0.1,
+      "validationMode": "automated"
+    },
+    {
+      "id": "speedBump.depthMaxMm",
+      "title": { "es": "Fondo máximo de speed bump", "en": "Maximum speed bump depth" },
+      "description": {
+        "es": "Un speed bump no supera el fondo de una baldosa.",
+        "en": "A speed bump does not exceed one tile in depth."
+      },
+      "value": 300,
+      "unit": "mm",
+      "ruleType": "normative",
+      "section": "3.5",
+      "page": 15,
+      "tolerance": 0.1,
+      "validationMode": "automated"
+    },
+    {
+      "id": "speedBump.heightMaxMm",
+      "title": { "es": "Altura máxima de speed bump", "en": "Maximum speed bump height" },
+      "description": {
+        "es": "La altura del speed bump no supera 10 mm.",
+        "en": "The speed bump height does not exceed 10 mm."
+      },
+      "value": 10,
+      "unit": "mm",
+      "ruleType": "normative",
+      "section": "3.5",
+      "page": 15,
+      "tolerance": 0.1,
+      "validationMode": "automated"
+    },
+    {
+      "id": "debris.heightMaxMm",
+      "title": { "es": "Altura máxima de debris", "en": "Maximum debris height" },
+      "description": {
+        "es": "Los residuos tienen una altura máxima de 3 mm.",
+        "en": "Debris has a maximum height of 3 mm."
+      },
+      "value": 3,
+      "unit": "mm",
+      "ruleType": "normative",
+      "section": "3.5",
+      "page": 15,
+      "tolerance": 0.1,
+      "validationMode": "manual"
+    },
+    {
+      "id": "obstacle.heightMinMm",
+      "title": { "es": "Altura mínima de obstáculo", "en": "Minimum obstacle height" },
+      "description": {
+        "es": "Los obstáculos miden al menos 150 mm de alto.",
+        "en": "Obstacles are at least 150 mm high."
+      },
+      "value": 150,
+      "unit": "mm",
+      "ruleType": "normative",
+      "section": "3.5",
+      "page": 15,
+      "tolerance": 0.1,
+      "validationMode": "automated"
+    },
+    {
+      "id": "obstacle.edgeClearanceMinMm",
+      "title": { "es": "Separación de obstáculo a borde", "en": "Obstacle edge clearance" },
+      "description": {
+        "es": "Fuera de evacuación, un obstáculo queda al menos a 250 mm de bordes e inclinaciones.",
+        "en": "Outside evacuation, an obstacle remains at least 250 mm from edges and inclines."
+      },
+      "value": 250,
+      "unit": "mm",
+      "ruleType": "normative",
+      "section": "3.5",
+      "page": 15,
+      "tolerance": 0.1,
+      "validationMode": "automated"
+    },
+    {
+      "id": "obstacle.evacuationWallClearanceMinMm",
+      "title": { "es": "Separación de obstáculo a pared", "en": "Obstacle wall clearance" },
+      "description": {
+        "es": "En evacuación, un obstáculo deja al menos 100 mm respecto de la pared.",
+        "en": "In evacuation, an obstacle leaves at least 100 mm from the wall."
+      },
+      "value": 100,
+      "unit": "mm",
+      "ruleType": "normative",
+      "section": "3.5",
+      "page": 15,
+      "tolerance": 0.1,
+      "validationMode": "automated"
+    },
+    {
+      "id": "intersection.markerWidthMm",
+      "title": { "es": "Ancho de marcador verde", "en": "Green marker width" },
+      "description": {
+        "es": "Cada marcador verde mide 25 mm de ancho.",
+        "en": "Each green marker is 25 mm wide."
+      },
+      "value": 25,
+      "unit": "mm",
+      "ruleType": "normative",
+      "section": "3.6",
+      "page": 15,
+      "tolerance": 0.1,
+      "validationMode": "automated"
+    },
+    {
+      "id": "intersection.markerHeightMm",
+      "title": { "es": "Alto de marcador verde", "en": "Green marker height" },
+      "description": {
+        "es": "Cada marcador verde mide 25 mm de alto.",
+        "en": "Each green marker is 25 mm high."
+      },
+      "value": 25,
+      "unit": "mm",
+      "ruleType": "normative",
+      "section": "3.6",
+      "page": 15,
+      "tolerance": 0.1,
+      "validationMode": "automated"
+    },
+    {
+      "id": "intersection.branchCountMin",
+      "title": { "es": "Mínimo de ramas", "en": "Minimum intersection branches" },
+      "description": {
+        "es": "Una intersección tiene al menos tres ramas.",
+        "en": "An intersection has at least three branches."
+      },
+      "value": 3,
+      "unit": "count",
+      "ruleType": "normative",
+      "section": "3.6",
+      "page": 15,
+      "tolerance": null,
+      "validationMode": "automated"
+    },
+    {
+      "id": "intersection.branchCountMax",
+      "title": { "es": "Máximo de ramas", "en": "Maximum intersection branches" },
+      "description": {
+        "es": "Una intersección tiene como máximo cuatro ramas.",
+        "en": "An intersection has at most four branches."
+      },
+      "value": 4,
+      "unit": "count",
+      "ruleType": "normative",
+      "section": "3.6",
+      "page": 15,
+      "tolerance": null,
+      "validationMode": "automated"
+    },
+    {
+      "id": "intersection.branchAngleDeg",
+      "title": { "es": "Ángulo de ramas", "en": "Intersection branch angle" },
+      "description": {
+        "es": "Las ramas de una intersección son perpendiculares.",
+        "en": "Intersection branches are perpendicular."
+      },
+      "value": 90,
+      "unit": "degree",
+      "ruleType": "normative",
+      "section": "3.6",
+      "page": 15,
+      "tolerance": 0.1,
+      "validationMode": "automated"
+    },
+    {
+      "id": "intersection.deadEndMarkerCount",
+      "title": { "es": "Marcadores para retorno", "en": "Dead-end marker count" },
+      "description": {
+        "es": "Dos marcadores, uno a cada lado antes de la intersección, indican retorno.",
+        "en": "Two markers, one on each side before the intersection, indicate a turn-around."
+      },
+      "value": 2,
+      "unit": "count",
+      "ruleType": "normative",
+      "section": "3.6",
+      "page": 15,
+      "tolerance": null,
+      "validationMode": "automated"
+    },
+    {
+      "id": "intersection.allowedInEvacuation",
+      "title": { "es": "Intersecciones en evacuación", "en": "Intersections in evacuation" },
+      "description": {
+        "es": "No se colocan intersecciones dentro de la zona de evacuación.",
+        "en": "Intersections are not placed inside the evacuation zone."
+      },
+      "value": false,
+      "unit": "none",
+      "ruleType": "normative",
+      "section": "3.6",
+      "page": 15,
+      "tolerance": null,
+      "validationMode": "automated"
+    },
+    {
+      "id": "ramp.inclineMaxDeg",
+      "title": { "es": "Inclinación máxima de rampa", "en": "Maximum ramp incline" },
+      "description": {
+        "es": "Una rampa no excede 25° respecto de la horizontal.",
+        "en": "A ramp does not exceed 25° from horizontal."
+      },
+      "value": 25,
+      "unit": "degree",
+      "ruleType": "normative",
+      "section": "3.7",
+      "page": 16,
+      "tolerance": 0.1,
+      "validationMode": "automated"
+    },
+    {
+      "id": "ramp.immediatePeakAllowed",
+      "title": { "es": "Pico inmediato de rampa", "en": "Immediate ramp peak" },
+      "description": {
+        "es": "Una subida no puede ir seguida inmediatamente de una bajada, ni a la inversa.",
+        "en": "A rise cannot be followed immediately by a drop, or vice versa."
+      },
+      "value": false,
+      "unit": "none",
+      "ruleType": "normative",
+      "section": "3.7",
+      "page": 16,
+      "tolerance": null,
+      "validationMode": "automated"
+    },
+    {
+      "id": "seesaw.inclineExclusiveMaxDeg",
+      "title": { "es": "Inclinación límite de balancín", "en": "Seesaw incline limit" },
+      "description": {
+        "es": "La inclinación del balancín debe ser estrictamente menor que 20°.",
+        "en": "The seesaw incline must be strictly less than 20°."
+      },
+      "value": 20,
+      "unit": "degree",
+      "ruleType": "normative",
+      "section": "3.8",
+      "page": 16,
+      "tolerance": 0.1,
+      "validationMode": "automated"
+    },
+    {
+      "id": "seesaw.lineMustBeStraight",
+      "title": { "es": "Línea recta del balancín", "en": "Straight seesaw line" },
+      "description": {
+        "es": "La baldosa de balancín lleva una línea recta.",
+        "en": "The seesaw tile carries a straight line."
+      },
+      "value": true,
+      "unit": "none",
+      "ruleType": "normative",
+      "section": "3.8",
+      "page": 16,
+      "tolerance": null,
+      "validationMode": "automated"
+    },
+    {
+      "id": "seesaw.scoringElementsAllowed",
+      "title": { "es": "Elementos puntuables en balancín", "en": "Scoring elements on seesaw" },
+      "description": {
+        "es": "No se colocan otros elementos puntuables en la baldosa de balancín.",
+        "en": "No other scoring elements are placed on the seesaw tile."
+      },
+      "value": false,
+      "unit": "none",
+      "ruleType": "normative",
+      "section": "3.8",
+      "page": 16,
+      "tolerance": null,
+      "validationMode": "automated"
+    },
+    {
+      "id": "evacuation.widthMm",
+      "title": { "es": "Ancho de zona de evacuación", "en": "Evacuation-zone width" },
+      "description": {
+        "es": "La zona de evacuación mide 1200 mm en un lado.",
+        "en": "The evacuation zone measures 1200 mm on one side."
+      },
+      "value": 1200,
+      "unit": "mm",
+      "ruleType": "normative",
+      "section": "3.9",
+      "page": 17,
+      "tolerance": 0.1,
+      "validationMode": "automated"
+    },
+    {
+      "id": "evacuation.heightMm",
+      "title": { "es": "Alto de zona de evacuación", "en": "Evacuation-zone height" },
+      "description": {
+        "es": "La zona de evacuación mide 900 mm en el otro lado.",
+        "en": "The evacuation zone measures 900 mm on its other side."
+      },
+      "value": 900,
+      "unit": "mm",
+      "ruleType": "normative",
+      "section": "3.9",
+      "page": 17,
+      "tolerance": 0.1,
+      "validationMode": "automated"
+    },
+    {
+      "id": "evacuation.wallHeightMinMm",
+      "title": { "es": "Altura mínima de paredes", "en": "Minimum evacuation wall height" },
+      "description": {
+        "es": "Las paredes de evacuación miden al menos 100 mm de alto.",
+        "en": "Evacuation walls are at least 100 mm high."
+      },
+      "value": 100,
+      "unit": "mm",
+      "ruleType": "normative",
+      "section": "3.9",
+      "page": 17,
+      "tolerance": 0.1,
+      "validationMode": "automated"
+    },
+    {
+      "id": "evacuation.entranceTapeWidthMm",
+      "title": { "es": "Ancho de cinta de entrada", "en": "Entrance tape width" },
+      "description": {
+        "es": "La cinta plateada reflectante de entrada mide 25 mm de ancho.",
+        "en": "The reflective silver entrance tape is 25 mm wide."
+      },
+      "value": 25,
+      "unit": "mm",
+      "ruleType": "normative",
+      "section": "3.9",
+      "page": 17,
+      "tolerance": 0.1,
+      "validationMode": "automated"
+    },
+    {
+      "id": "evacuation.entranceTapeLengthMm",
+      "title": { "es": "Largo de cinta de entrada", "en": "Entrance tape length" },
+      "description": {
+        "es": "La cinta plateada reflectante de entrada mide 250 mm de largo.",
+        "en": "The reflective silver entrance tape is 250 mm long."
+      },
+      "value": 250,
+      "unit": "mm",
+      "ruleType": "normative",
+      "section": "3.9",
+      "page": 17,
+      "tolerance": 0.1,
+      "validationMode": "automated"
+    },
+    {
+      "id": "evacuation.exitTapeWidthMm",
+      "title": { "es": "Ancho de cinta de salida", "en": "Exit tape width" },
+      "description": {
+        "es": "La cinta negra de salida mide 25 mm de ancho.",
+        "en": "The black exit tape is 25 mm wide."
+      },
+      "value": 25,
+      "unit": "mm",
+      "ruleType": "normative",
+      "section": "3.9",
+      "page": 17,
+      "tolerance": 0.1,
+      "validationMode": "automated"
+    },
+    {
+      "id": "evacuation.exitTapeLengthMm",
+      "title": { "es": "Largo de cinta de salida", "en": "Exit tape length" },
+      "description": {
+        "es": "La cinta negra de salida mide 250 mm de largo.",
+        "en": "The black exit tape is 250 mm long."
+      },
+      "value": 250,
+      "unit": "mm",
+      "ruleType": "normative",
+      "section": "3.9",
+      "page": 17,
+      "tolerance": 0.1,
+      "validationMode": "automated"
+    },
+    {
+      "id": "evacuation.pointLegLengthMm",
+      "title": { "es": "Lados del punto de evacuación", "en": "Evacuation-point leg length" },
+      "description": {
+        "es": "Los puntos seguros son triángulos rectángulos con lados de 300 mm.",
+        "en": "Safe points are right triangles with 300 mm legs."
+      },
+      "value": 300,
+      "unit": "mm",
+      "ruleType": "normative",
+      "section": "3.9",
+      "page": 17,
+      "tolerance": 0.1,
+      "validationMode": "automated"
+    },
+    {
+      "id": "evacuation.pointWallWidthMm",
+      "title": { "es": "Ancho de paredes del punto", "en": "Evacuation-point wall width" },
+      "description": {
+        "es": "Las paredes de los triángulos miden 60 mm de ancho y dejan centro hueco.",
+        "en": "The triangular walls are 60 mm wide and leave a hollow centre."
+      },
+      "value": 60,
+      "unit": "mm",
+      "ruleType": "normative",
+      "section": "3.9",
+      "page": 17,
+      "tolerance": 0.1,
+      "validationMode": "automated"
+    },
+    {
+      "id": "evacuation.lineEndsAtEntrance",
+      "title": { "es": "Fin de línea en entrada", "en": "Line ends at entrance" },
+      "description": {
+        "es": "La línea negra termina en la entrada de evacuación.",
+        "en": "The black line ends at the evacuation entrance."
+      },
+      "value": true,
+      "unit": "none",
+      "ruleType": "normative",
+      "section": "3.9",
+      "page": 17,
+      "tolerance": null,
+      "validationMode": "automated"
+    },
+    {
+      "id": "evacuation.lineResumesAtExit",
+      "title": { "es": "Reinicio de línea en salida", "en": "Line resumes at exit" },
+      "description": {
+        "es": "La línea negra comienza nuevamente en la salida de evacuación.",
+        "en": "The black line begins again at the evacuation exit."
+      },
+      "value": true,
+      "unit": "none",
+      "ruleType": "normative",
+      "section": "3.9",
+      "page": 17,
+      "tolerance": null,
+      "validationMode": "automated"
+    },
+    {
+      "id": "victim.diameterMinMm",
+      "title": { "es": "Diámetro mínimo de víctima", "en": "Minimum victim diameter" },
+      "description": {
+        "es": "Las víctimas esféricas miden al menos 40 mm de diámetro.",
+        "en": "Spherical victims are at least 40 mm in diameter."
+      },
+      "value": 40,
+      "unit": "mm",
+      "ruleType": "normative",
+      "section": "3.10",
+      "page": 17,
+      "tolerance": 0.1,
+      "validationMode": "manual"
+    },
+    {
+      "id": "victim.diameterMaxMm",
+      "title": { "es": "Diámetro máximo de víctima", "en": "Maximum victim diameter" },
+      "description": {
+        "es": "Las víctimas esféricas miden como máximo 50 mm de diámetro.",
+        "en": "Spherical victims are at most 50 mm in diameter."
+      },
+      "value": 50,
+      "unit": "mm",
+      "ruleType": "normative",
+      "section": "3.10",
+      "page": 18,
+      "tolerance": 0.1,
+      "validationMode": "manual"
+    },
+    {
+      "id": "victim.weightMaxGram",
+      "title": { "es": "Peso máximo de víctima", "en": "Maximum victim weight" },
+      "description": {
+        "es": "Una víctima pesa como máximo 80 g.",
+        "en": "A victim weighs at most 80 g."
+      },
+      "value": 80,
+      "unit": "gram",
+      "ruleType": "normative",
+      "section": "3.10",
+      "page": 18,
+      "tolerance": 0.1,
+      "validationMode": "manual"
+    },
+    {
+      "id": "victim.livingCount",
+      "title": { "es": "Cantidad de víctimas vivas", "en": "Living victim count" },
+      "description": {
+        "es": "Se colocan exactamente dos víctimas vivas.",
+        "en": "Exactly two living victims are placed."
+      },
+      "value": 2,
+      "unit": "count",
+      "ruleType": "normative",
+      "section": "3.10",
+      "page": 18,
+      "tolerance": null,
+      "validationMode": "manual"
+    },
+    {
+      "id": "victim.deadCount",
+      "title": { "es": "Cantidad de víctimas muertas", "en": "Dead victim count" },
+      "description": {
+        "es": "Se coloca exactamente una víctima muerta.",
+        "en": "Exactly one dead victim is placed."
+      },
+      "value": 1,
+      "unit": "count",
+      "ruleType": "normative",
+      "section": "3.10",
+      "page": 18,
+      "tolerance": null,
+      "validationMode": "manual"
+    },
+    {
+      "id": "field.measurementToleranceRatio",
+      "title": { "es": "Tolerancia general de medidas", "en": "General measurement tolerance" },
+      "description": {
+        "es": "Las medidas reglamentarias admiten una tolerancia de ±10 %; RescueSketch diseña con valores nominales.",
+        "en": "Rule measurements allow ±10% tolerance; RescueSketch designs to nominal values."
+      },
+      "value": 0.1,
+      "unit": "ratio",
+      "ruleType": "normative",
+      "section": "3.11",
+      "page": 18,
+      "tolerance": null,
+      "validationMode": "informational"
+    }
+  ]
+}

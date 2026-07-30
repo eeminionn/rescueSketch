@@ -1,0 +1,90 @@
+name: Bug report / Reporte de bug
+description: Report a reproducible RescueSketch defect.
+title: '[Bug]: '
+labels:
+  - 'type:bug'
+  - 'status:triage'
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve RescueSketch. Do not include secrets or personal data.
+        Gracias por ayudar a mejorar RescueSketch. No incluyas secretos ni datos personales.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area / Área
+      options:
+        - Editor and canvas / Editor y lienzo
+        - Rules and validation / Reglas y validación
+        - Export and fabrication / Exportación y fabricación
+        - Authentication and public save / Autenticación y guardado público
+        - Gallery and dashboard / Galería y panel principal
+        - Accessibility / Accesibilidad
+        - Documentation / Documentación
+        - Repository automation / Automatización
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: RescueSketch version or commit / Versión o commit
+      description: Use the release number or full commit SHA when possible.
+      placeholder: 'v0.1.0 or 0123456789abcdef...'
+    validations:
+      required: true
+
+  - type: input
+    id: environment
+    attributes:
+      label: Environment / Entorno
+      description: Browser, operating system, device, and input method.
+      placeholder: 'Firefox 128, macOS 15, desktop, keyboard and mouse'
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps / Pasos para reproducir
+      placeholder: |
+        1. Open...
+        2. Add...
+        3. Select...
+        4. Observe...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior / Comportamiento esperado
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior / Comportamiento actual
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence / Evidencia
+      description: Add sanitized logs, screenshots, or a minimal track JSON. Drag files here instead of linking short-lived storage.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Submission checks / Comprobaciones
+      options:
+        - label: I searched for an existing issue. / Busqué un issue existente.
+          required: true
+        - label: This report contains no credentials or personal data. / Este reporte no contiene credenciales ni datos personales.
+          required: true
+        - label: This is a product defect, not a request for an official competition ruling. / Es un defecto del producto, no una solicitud de resolución oficial.
+          required: true

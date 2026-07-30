@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions and ideas / Preguntas e ideas
+    url: https://github.com/eeminionn/rescueSketch/discussions
+    about: Ask for help or explore an idea before opening an actionable issue.
+  - name: Security report / Reporte de seguridad
+    url: https://github.com/eeminionn/rescueSketch/security/advisories/new
+    about: Report vulnerabilities privately. Never disclose a vulnerability in an issue.
+  - name: Official RoboCupJunior Rescue information
+    url: https://junior.robocup.org/rcj-rescue/
+    about: RescueSketch is unofficial; consult the official programme for authoritative information.
