@@ -1,0 +1,88 @@
+name: Rules discrepancy / Discrepancia reglamentaria
+description: Report a mismatch between RescueSketch and the authoritative English rules.
+title: '[Rules]: '
+labels:
+  - 'type:rules'
+  - 'rules:needs-review'
+  - 'status:triage'
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The current official English rules and event officials take precedence over RescueSketch.
+        El reglamento inglés vigente y los oficiales del evento prevalecen sobre RescueSketch.
+        Do not upload copied pages or official diagrams; cite them precisely instead.
+
+  - type: input
+    id: source
+    attributes:
+      label: Official source / Fuente oficial
+      description: Publication title, revision date, and stable official URL if available.
+      placeholder: 'RoboCupJunior Rescue Line Rules 2026, 2026-03-29, https://...'
+    validations:
+      required: true
+
+  - type: input
+    id: location
+    attributes:
+      label: Section and page / Sección y página
+      placeholder: 'Section 2.3, page 8'
+    validations:
+      required: true
+
+  - type: textarea
+    id: englishConcept
+    attributes:
+      label: Relevant English wording / Concepto relevante en inglés
+      description: Quote only the shortest passage needed, then explain it in your own words.
+    validations:
+      required: true
+
+  - type: textarea
+    id: currentBehavior
+    attributes:
+      label: Current RescueSketch behavior / Comportamiento actual
+      description: Include the rules value, validator message, catalogue piece, or translation at issue.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expectedBehavior
+    attributes:
+      label: Expected interpretation / Interpretación esperada
+      description: Explain the correction and identify any ambiguity.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: validationMode
+    attributes:
+      label: Suggested validation mode / Modo de validación sugerido
+      options:
+        - Automatic error / Error automático
+        - Advisory warning / Advertencia
+        - Manual check / Comprobación manual
+        - Documentation only / Solo documentación
+        - Unsure / No está claro
+    validations:
+      required: true
+
+  - type: input
+    id: affectedVersion
+    attributes:
+      label: Affected RescueSketch version / Versión afectada
+      placeholder: 'v0.1.0 or commit SHA'
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Submission checks / Comprobaciones
+      options:
+        - label: I verified the source is the official English publication, not a translation. / Verifiqué que la fuente es la publicación oficial en inglés.
+          required: true
+        - label: I searched for later official clarifications and existing reports. / Busqué aclaraciones oficiales posteriores y reportes existentes.
+          required: true
+        - label: I did not upload official pages, logos, or diagrams. / No adjunté páginas, logos ni diagramas oficiales.
+          required: true

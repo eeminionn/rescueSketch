@@ -1,0 +1,16 @@
+# Default ownership / Propiedad predeterminada
+* @eeminionn
+
+# Sensitive and policy surfaces / Superficies sensibles y políticas
+/.github/ @eeminionn
+/SECURITY.md @eeminionn
+/GOVERNANCE.md @eeminionn
+/LICENSE @eeminionn
+/LICENSES/ @eeminionn
+/supabase/ @eeminionn
+/communityTracks/ @eeminionn
+
+# Rules and public formats require maintainer review.
+# Reglas y formatos públicos requieren revisión mantenedora.
+/src/rules/ @eeminionn
+/schemas/ @eeminionn

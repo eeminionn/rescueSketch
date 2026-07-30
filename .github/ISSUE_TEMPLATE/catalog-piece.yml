@@ -1,0 +1,80 @@
+name: Catalogue piece / Pieza de catálogo
+description: Propose a new tile, hazard, structure, marker, or parametric element.
+title: '[Catalogue]: '
+labels:
+  - 'type:feature'
+  - 'area:catalog'
+  - 'rules:needs-review'
+  - 'status:triage'
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Proposed bilingual name / Nombre bilingüe propuesto
+      placeholder: 'English name / Nombre en español'
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category / Categoría
+      options:
+        - Line or curve / Línea o curva
+        - Intersection or marker / Intersección o marcador
+        - Gap, debris, speed bump, or obstacle / Gap, debris, speed bump u obstáculo
+        - Ramp, level, bridge, or seesaw / Rampa, nivel, puente o balancín
+        - Evacuation zone / Zona de evacuación
+        - Annotation or fabrication aid / Anotación o ayuda de fabricación
+    validations:
+      required: true
+
+  - type: textarea
+    id: userNeed
+    attributes:
+      label: User need / Necesidad
+      description: Explain the construction or design task this piece enables.
+    validations:
+      required: true
+
+  - type: textarea
+    id: geometry
+    attributes:
+      label: Parametric geometry / Geometría paramétrica
+      description: List dimensions, allowed ranges, connection points, rotation behavior, and layer behavior in millimetres.
+    validations:
+      required: true
+
+  - type: textarea
+    id: rulesTraceability
+    attributes:
+      label: Rules traceability / Trazabilidad reglamentaria
+      description: Cite revision, section, and page for every normative value. Mark non-normative fabrication choices clearly.
+    validations:
+      required: true
+
+  - type: textarea
+    id: construction
+    attributes:
+      label: Construction guidance / Consejos de construcción
+      description: Provide original guidance; do not copy official diagrams or pages.
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance cases / Casos de aceptación
+      description: Include valid, invalid, and boundary examples.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Submission checks / Comprobaciones
+      options:
+        - label: Each normative measurement has an English source citation. / Cada medida normativa tiene una cita inglesa.
+          required: true
+        - label: Non-normative parameters are identified as construction choices. / Los parámetros no normativos están identificados como decisiones de construcción.
+          required: true
+        - label: I own or may license every submitted image or diagram. / Soy titular o puedo licenciar cada imagen o diagrama enviado.
+          required: true
