@@ -37,6 +37,9 @@ La versión `v1.0` está planificada con:
 
 **Estado:** el proyecto está en construcción. Durante las versiones `0.x`, los
 esquemas y las interfaces públicas pueden cambiar de forma incompatible.
+La versión `v0.2` ya incorpora el dashboard bilingüe, 24 piezas trazables, el
+lienzo SVG de 8 × 6 baldosas, niveles, teclado, drag and drop, undo/redo,
+inspector contextual y recuperación automática local.
 
 ### Base reglamentaria
 
@@ -112,6 +115,9 @@ The planned `v1.0` includes:
 
 **Status:** the project is under construction. Schemas and public interfaces
 may change incompatibly throughout `0.x` releases.
+Version `v0.2` already includes the bilingual dashboard, 24 traceable pieces,
+the 8 × 6 SVG canvas, levels, keyboard access, drag and drop, undo/redo, the
+contextual inspector, and automatic local recovery.
 
 ### Rules baseline
 
