@@ -1,4 +1,5 @@
-import { createEmptyTrackDocument, parseTrackDocument } from '../../domain';
+import { createEmptyTrackDocument, parseTrackDocument, type TrackDocumentV1 } from '../../domain';
+import { validateTrackDocument } from '../../validation';
 import { createEditorStore } from './editorStore';
 
 const acceptedAt = '2026-07-30T18:00:00-04:00';
@@ -32,6 +33,38 @@ function createDocumentWithTiles() {
 }
 
 describe('createEditorStore', () => {
+  it('migrates a v0.2 recovered safe point before editor validation', () => {
+    const document = createEmptyTrackDocument(acceptedAt);
+    const legacyDocument = {
+      ...document,
+      tiles: [
+        {
+          id: 'legacy-safe-point',
+          catalogItemId: 'deadSafePoint',
+          levelId: 'level-0',
+          position: { x: 300, y: 300 },
+          rotation: 0,
+          geometry: [],
+          parameters: {
+            legLengthMm: 300,
+            wallWidthMm: 60,
+          },
+        },
+      ],
+    } as TrackDocumentV1;
+    const store = createEditorStore(legacyDocument);
+    const recoveredDocument = store.getState().document;
+
+    expect(recoveredDocument.tiles).toEqual([]);
+    expect(recoveredDocument.structures).toMatchObject([
+      {
+        id: 'legacy-safe-point',
+        kind: 'deadSafePoint',
+      },
+    ]);
+    expect(() => validateTrackDocument(recoveredDocument)).not.toThrow();
+  });
+
   it('inserts on the millimetre grid and expands the canvas by whole tiles', () => {
     const store = createEditorStore(createEmptyTrackDocument(acceptedAt));
 

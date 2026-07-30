@@ -138,8 +138,55 @@ export type TrackTile = z.infer<typeof trackTileSchema>;
 export type TrackStructure = z.infer<typeof trackStructureSchema>;
 export type TrackAnnotation = z.infer<typeof trackAnnotationSchema>;
 
+const legacySafePointKinds = new Set(['livingSafePoint', 'deadSafePoint']);
+
+function isUnknownRecord(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
+}
+
+function migrateLegacySafePointTiles(document: unknown): unknown {
+  if (
+    !isUnknownRecord(document) ||
+    !Array.isArray(document.tiles) ||
+    !Array.isArray(document.structures)
+  ) {
+    return document;
+  }
+
+  const legacyTiles = document.tiles as unknown[];
+  const existingStructures = document.structures as unknown[];
+  const migratedStructures: Array<Record<string, unknown>> = [];
+  const retainedTiles = legacyTiles.filter((tile) => {
+    if (
+      !isUnknownRecord(tile) ||
+      typeof tile.catalogItemId !== 'string' ||
+      !legacySafePointKinds.has(tile.catalogItemId)
+    ) {
+      return true;
+    }
+
+    const { catalogItemId, ...structure } = tile;
+    migratedStructures.push({
+      ...structure,
+      kind: catalogItemId,
+    });
+
+    return false;
+  });
+
+  if (migratedStructures.length === 0) {
+    return document;
+  }
+
+  return {
+    ...document,
+    tiles: retainedTiles,
+    structures: [...existingStructures, ...migratedStructures],
+  };
+}
+
 export function parseTrackDocument(document: unknown): TrackDocumentV1 {
-  return trackDocumentV1Schema.parse(document);
+  return trackDocumentV1Schema.parse(migrateLegacySafePointTiles(document));
 }
 
 function sortCanonicalValue(value: unknown): unknown {
