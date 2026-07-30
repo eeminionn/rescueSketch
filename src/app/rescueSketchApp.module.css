@@ -1,0 +1,94 @@
+.placeholder {
+  align-items: center;
+  background:
+    radial-gradient(circle at 80% 10%, rgb(156 213 185 / 27%), transparent 28rem), #f4f3ed;
+  color: #10231f;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 110px 24px 60px;
+  position: relative;
+  text-align: center;
+}
+
+.placeholderBrand {
+  align-items: center;
+  color: inherit;
+  display: inline-flex;
+  font-size: 0.9rem;
+  font-weight: 800;
+  gap: 10px;
+  left: clamp(22px, 5vw, 70px);
+  position: absolute;
+  text-decoration: none;
+  top: 26px;
+}
+
+.placeholderBrand > span {
+  align-items: center;
+  background: #10231f;
+  border-radius: 9px;
+  color: #fff;
+  display: inline-flex;
+  font-size: 0.62rem;
+  height: 36px;
+  justify-content: center;
+  width: 36px;
+}
+
+.placeholder section {
+  max-width: 650px;
+}
+
+.placeholder section > p:first-child {
+  color: #397765;
+  font-size: 0.68rem;
+  font-weight: 820;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.placeholder h1 {
+  font-size: clamp(2.8rem, 7vw, 5.5rem);
+  letter-spacing: -0.065em;
+  line-height: 0.95;
+  margin: 20px 0;
+}
+
+.placeholder h1 + p {
+  color: #5d716a;
+  line-height: 1.65;
+}
+
+.placeholder section > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.placeholder button,
+.placeholder section a {
+  align-items: center;
+  border-radius: 9px;
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 0.76rem;
+  font-weight: 760;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 16px;
+  text-decoration: none;
+}
+
+.placeholder button {
+  background: #10231f;
+  border: 0;
+  color: #fff;
+}
+
+.placeholder section a {
+  border: 1px solid rgb(16 35 31 / 20%);
+  color: #10231f;
+}

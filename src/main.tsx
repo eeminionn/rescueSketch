@@ -1,7 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
-import { FoundationApp } from './app/FoundationApp';
+import { RescueSketchApp } from './app/RescueSketchApp';
 
 const rootElement = document.querySelector<HTMLDivElement>('#root');
 
@@ -11,6 +11,6 @@ if (rootElement === null) {
 
 createRoot(rootElement).render(
   <StrictMode>
-    <FoundationApp />
+    <RescueSketchApp />
   </StrictMode>,
 );

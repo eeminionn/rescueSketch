@@ -1,0 +1,23 @@
+.catalogSvg {
+  display: block;
+  overflow: visible;
+}
+
+.catalogSvg[data-sizing='container'] {
+  height: auto;
+  max-height: 100%;
+  max-width: 100%;
+  width: 100%;
+}
+
+.catalogSvg[data-selected='true'] {
+  filter: drop-shadow(0 0 4px var(--rescueSketchSelectionColor, #ef7042));
+}
+
+@media (forced-colors: active) {
+  .catalogSvg[data-selected='true'] {
+    filter: none;
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
+}
