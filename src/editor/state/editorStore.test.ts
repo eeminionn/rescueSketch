@@ -150,6 +150,12 @@ describe('createEditorStore', () => {
     expect(store.getState().document.tiles[0]?.position.x).toBe(10);
   });
 
+  it('snaps pointer-driven absolute moves to the grid', () => {
+    const store = createEditorStore(createDocumentWithTiles());
+    expect(store.getState().moveElementTo('tile-a', { x: 47, y: 86 }, { snap: true })).toBe(true);
+    expect(store.getState().document.tiles[0]?.position).toEqual({ x: 50, y: 90 });
+  });
+
   it('cancels an in-progress transaction without adding history', () => {
     const store = createEditorStore(createDocumentWithTiles());
     store.getState().setSelection(['tile-a']);
