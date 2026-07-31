@@ -59,6 +59,8 @@ const categoryOrder: readonly CatalogCategory[] = [
   'evacuation',
   'victim',
 ];
+type PaletteCategory = CatalogCategory | 'all';
+const paletteCategoryOrder: readonly PaletteCategory[] = ['all', ...categoryOrder];
 
 const structureKindByCatalogItemId: Readonly<Record<string, TrackStructure['kind']>> = {
   bridge: 'bridge',
@@ -606,7 +608,7 @@ export function EditorWorkspace({
   const activeLevelId = useStore(editorStore, (state) => state.activeLevelId);
   const history = useStore(editorStore, (state) => state.history);
   const revision = useStore(editorStore, (state) => state.revision);
-  const [activeCategory, setActiveCategory] = useState<CatalogCategory>('line');
+  const [activeCategory, setActiveCategory] = useState<PaletteCategory>('all');
   const [query, setQuery] = useState('');
   const [zoom, setZoom] = useState(0.75);
   const [inspectorOpen, setInspectorOpen] = useState(false);
@@ -614,6 +616,10 @@ export function EditorWorkspace({
   const [dimensionsVisible, setDimensionsVisible] = useState(false);
   const [wasteRatio, setWasteRatio] = useState(0.1);
   const [activeDragItem, setActiveDragItem] = useState<CatalogItem | null>(null);
+  const [canvasDraft, setCanvasDraft] = useState({
+    widthMm: String(document.canvas.widthMm),
+    heightMm: String(document.canvas.heightMm),
+  });
   const canvasViewportRef = useRef<HTMLDivElement>(null);
   const { isOver, setNodeRef: setCanvasDropRef } = useDroppable({ id: 'track-canvas' });
   const sensors = useSensors(
@@ -626,7 +632,7 @@ export function EditorWorkspace({
 
     return rescueSketchCatalog.items.filter(
       (item) =>
-        item.category === activeCategory &&
+        (activeCategory === 'all' || item.category === activeCategory) &&
         (normalizedQuery.length === 0 ||
           item.names[language].toLocaleLowerCase(language).includes(normalizedQuery) ||
           item.descriptions[language].toLocaleLowerCase(language).includes(normalizedQuery)),
@@ -760,6 +766,19 @@ export function EditorWorkspace({
     }
   };
 
+  const updateCanvasDimension = (axis: 'widthMm' | 'heightMm', rawValue: string) => {
+    setCanvasDraft((current) => ({ ...current, [axis]: rawValue }));
+    const value = Number(rawValue);
+    if (!Number.isFinite(value) || value < tileSizeMm || value > 30_000) return;
+    const roundedValue = Math.round(value / 10) * 10;
+    editorStore
+      .getState()
+      .replaceDocument(
+        { ...document, canvas: { ...document.canvas, [axis]: roundedValue } },
+        false,
+      );
+  };
+
   const handleDragStart = (event: DragStartEvent) => {
     const dragData = event.active.data.current as DragData | undefined;
 
@@ -785,7 +804,10 @@ export function EditorWorkspace({
     }
 
     if (dragData.sourceType === 'element' && dragData.elementId !== undefined) {
-      const millimetresPerPixel = document.canvas.widthMm / viewport.scrollWidth;
+      const svg = viewport.querySelector('svg');
+      const svgRect = svg?.getBoundingClientRect();
+      const millimetresPerPixel =
+        svgRect === undefined || svgRect.width === 0 ? 1 : document.canvas.widthMm / svgRect.width;
       editorStore.getState().setSelection([dragData.elementId]);
       editorStore.getState().moveSelectionBy({
         x: event.delta.x * millimetresPerPixel,
@@ -888,7 +910,44 @@ export function EditorWorkspace({
                   defaultValue={t('editor.untitledTrack')}
                 />
               </label>
-              <span>
+              <fieldset className={styles.canvasSizeControls}>
+                <legend>{t('editor.canvasSizeTitle')}</legend>
+                <label>
+                  <span>{t('editor.canvasWidth')}</span>
+                  <input
+                    aria-label={t('editor.canvasWidth')}
+                    min={tileSizeMm}
+                    max={30_000}
+                    onBlur={(event) => updateCanvasDimension('widthMm', event.currentTarget.value)}
+                    onChange={(event) => {
+                      const value = event.currentTarget.value;
+                      setCanvasDraft((current) => ({ ...current, widthMm: value }));
+                    }}
+                    step={10}
+                    type="number"
+                    value={canvasDraft.widthMm}
+                  />
+                </label>
+                <span aria-hidden="true">×</span>
+                <label>
+                  <span>{t('editor.canvasHeight')}</span>
+                  <input
+                    aria-label={t('editor.canvasHeight')}
+                    min={tileSizeMm}
+                    max={30_000}
+                    onBlur={(event) => updateCanvasDimension('heightMm', event.currentTarget.value)}
+                    onChange={(event) => {
+                      const value = event.currentTarget.value;
+                      setCanvasDraft((current) => ({ ...current, heightMm: value }));
+                    }}
+                    step={10}
+                    type="number"
+                    value={canvasDraft.heightMm}
+                  />
+                </label>
+                <span aria-hidden="true">mm</span>
+              </fieldset>
+              <span className={styles.canvasSizeSummary}>
                 {document.canvas.widthMm} × {document.canvas.heightMm} mm
               </span>
             </div>
@@ -935,7 +994,7 @@ export function EditorWorkspace({
                 className={styles.categoryTabs}
                 role="tablist"
               >
-                {categoryOrder.map((category) => (
+                {paletteCategoryOrder.map((category) => (
                   <button
                     aria-selected={activeCategory === category}
                     key={category}
@@ -1020,6 +1079,18 @@ export function EditorWorkspace({
                     type="button"
                   >
                     ⌫
+                  </button>
+                  <button
+                    aria-label={t('editor.clearAll')}
+                    disabled={document.tiles.length + document.structures.length === 0}
+                    onClick={() => {
+                      if (window.confirm(t('editor.clearAllConfirm'))) {
+                        editorStore.getState().clearAllElements();
+                      }
+                    }}
+                    type="button"
+                  >
+                    🗑
                   </button>
                   <ExportActions document={document} />
                 </div>

@@ -75,6 +75,7 @@ export interface EditorState {
   moveElementTo: (elementId: string, positionMm: Point, options?: MoveOptions) => boolean;
   duplicateSelection: (options?: DuplicateOptions) => readonly string[];
   deleteSelection: () => boolean;
+  clearAllElements: () => boolean;
   rotateSelection: (direction?: RotationDirection) => boolean;
   addLevel: (level: TrackLevel) => boolean;
   removeLevel: (levelId: string, destinationLevelId?: string) => boolean;

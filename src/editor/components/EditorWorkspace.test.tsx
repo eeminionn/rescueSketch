@@ -104,6 +104,35 @@ describe('EditorWorkspace', () => {
     ).toBeInTheDocument();
   });
 
+  it('starts with every catalog piece in the Todo category and edits canvas dimensions', async () => {
+    const user = userEvent.setup();
+    renderEditor();
+
+    expect(screen.getByRole('tab', { name: 'Todo' })).toHaveAttribute('aria-selected', 'true');
+    expect(within(getCatalogPanel()).getByText('Línea recta')).toBeInTheDocument();
+    expect(within(getCatalogPanel()).getByText('Víctima viva')).toBeInTheDocument();
+
+    const width = screen.getByRole('spinbutton', { name: 'Ancho del lienzo (mm)' });
+    await user.clear(width);
+    await user.type(width, '3000');
+    await user.tab();
+    expect(screen.getByRole('img')).toHaveAttribute('viewBox', '0 0 3000 1800');
+  });
+
+  it('clears all pieces with confirmation', async () => {
+    const user = userEvent.setup();
+    vi.stubGlobal(
+      'confirm',
+      vi.fn(() => true),
+    );
+    renderEditor();
+    await user.click(getAddButton('Línea recta'));
+    await user.click(getAddButton('Víctima viva'));
+
+    await user.click(screen.getByRole('button', { name: 'Borrar todas las piezas' }));
+    expect(getCanvasElement()).not.toBeInTheDocument();
+  });
+
   it('supports rotate, delete, undo, and redo through visible controls', async () => {
     const user = userEvent.setup();
     renderEditor();

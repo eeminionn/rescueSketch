@@ -32,8 +32,11 @@ export function normalizeLanguage(language: string | null | undefined): AppLangu
 
 export function resolveInitialLanguage(
   storage: ReadableStorage | null = getBrowserStorage(),
-  browserLanguages: readonly string[] = typeof navigator === 'undefined' ? [] : navigator.languages,
+  _browserLanguages: readonly string[] = typeof navigator === 'undefined'
+    ? []
+    : navigator.languages,
 ): AppLanguage {
+  void _browserLanguages;
   try {
     const storedLanguage = normalizeLanguage(storage?.getItem(languageStorageKey));
 
@@ -42,14 +45,6 @@ export function resolveInitialLanguage(
     }
   } catch {
     // A blocked storage API must not prevent RescueSketch from starting.
-  }
-
-  for (const browserLanguage of browserLanguages) {
-    const supportedLanguage = normalizeLanguage(browserLanguage);
-
-    if (supportedLanguage !== null) {
-      return supportedLanguage;
-    }
   }
 
   return defaultLanguage;

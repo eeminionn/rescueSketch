@@ -122,6 +122,17 @@ describe('createEditorStore', () => {
     expect(store.getState().selectionIds).toEqual([]);
   });
 
+  it('clears every editable element in one undoable operation', () => {
+    const store = createEditorStore(createDocumentWithTiles());
+    store.getState().setSelection(['tile-a']);
+
+    expect(store.getState().clearAllElements()).toBe(true);
+    expect(store.getState().document.tiles).toEqual([]);
+    expect(store.getState().selectionIds).toEqual([]);
+    expect(store.getState().undo()).toBe(true);
+    expect(store.getState().document.tiles).toHaveLength(2);
+  });
+
   it('groups drag updates into one deterministic undo transaction', () => {
     const store = createEditorStore(createDocumentWithTiles());
     store.getState().setSelection(['tile-a']);
