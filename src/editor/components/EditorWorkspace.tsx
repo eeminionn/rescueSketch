@@ -30,6 +30,7 @@ import {
 } from '../../catalog';
 import {
   createEmptyTrackDocument,
+  snapPoint,
   tileSizeMm,
   type Point,
   type TrackDocumentV1,
@@ -117,6 +118,11 @@ interface DragData {
 
 interface ElementDragOrigin {
   elementId: string;
+  position: Point;
+}
+
+interface DragPreview {
+  catalogItemId: string;
   position: Point;
 }
 
@@ -622,6 +628,7 @@ export function EditorWorkspace({
   const [dimensionsVisible, setDimensionsVisible] = useState(false);
   const [wasteRatio, setWasteRatio] = useState(0.1);
   const [activeDragItem, setActiveDragItem] = useState<CatalogItem | null>(null);
+  const [dragPreview, setDragPreview] = useState<DragPreview | null>(null);
   const [canvasDraft, setCanvasDraft] = useState({
     widthMm: String(document.canvas.widthMm),
     heightMm: String(document.canvas.heightMm),
@@ -791,6 +798,10 @@ export function EditorWorkspace({
 
     if (dragData?.catalogItemId !== undefined) {
       setActiveDragItem(getCatalogItem(dragData.catalogItemId));
+      setDragPreview({
+        catalogItemId: dragData.catalogItemId,
+        position: getNextPosition(document),
+      });
     } else if (dragData?.elementId !== undefined) {
       setActiveDragItem(getElementCatalogItem(document, dragData.elementId));
       const element = [...document.tiles, ...document.structures].find(
@@ -811,29 +822,47 @@ export function EditorWorkspace({
     const svg = viewport?.querySelector('svg');
     const svgRect = svg?.getBoundingClientRect();
 
-    if (
-      dragData?.sourceType !== 'element' ||
-      dragData.elementId === undefined ||
-      origin === null ||
-      svgRect === undefined ||
-      svgRect.width === 0
-    ) {
+    if (svgRect === undefined || svgRect.width === 0 || dragData === undefined) {
       return;
     }
 
     const millimetresPerPixel = document.canvas.widthMm / svgRect.width;
-    editorStore.getState().moveElementTo(
-      dragData.elementId,
+    if (dragData.sourceType === 'catalog' && dragData.catalogItemId !== undefined) {
+      const translatedRect = event.active.rect.current.translated;
+      if (translatedRect === null) return;
+      const relativeX = translatedRect.left + translatedRect.width / 2 - svgRect.left;
+      const relativeY = translatedRect.top + translatedRect.height / 2 - svgRect.top;
+      setDragPreview({
+        catalogItemId: dragData.catalogItemId,
+        position: snapPoint(
+          {
+            x: Math.max(0, (relativeX / svgRect.width) * document.canvas.widthMm - tileSizeMm / 2),
+            y: Math.max(
+              0,
+              (relativeY / svgRect.height) * document.canvas.heightMm - tileSizeMm / 2,
+            ),
+          },
+          tileSizeMm,
+        ),
+      });
+      return;
+    }
+
+    if (dragData.elementId === undefined || origin === null) return;
+
+    const snappedPosition = snapPoint(
       {
         x: origin.position.x + event.delta.x * millimetresPerPixel,
         y: origin.position.y + event.delta.y * millimetresPerPixel,
       },
-      { snap: true },
+      tileSizeMm,
     );
+    editorStore.getState().moveElementTo(dragData.elementId, snappedPosition, { snap: false });
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
     setActiveDragItem(null);
+    setDragPreview(null);
     const dragData = event.active.data.current as DragData | undefined;
     const viewport = canvasViewportRef.current;
 
@@ -862,7 +891,7 @@ export function EditorWorkspace({
       y: Math.max(0, (relativeY / svgRect.height) * document.canvas.heightMm - tileSizeMm / 2),
     };
 
-    insertCatalogItem(editorStore, dragData.catalogItemId, position);
+    insertCatalogItem(editorStore, dragData.catalogItemId, snapPoint(position, tileSizeMm));
   };
 
   const beginCanvasPan = (event: ReactPointerEvent<HTMLDivElement>) => {
@@ -907,6 +936,7 @@ export function EditorWorkspace({
     <DndContext
       onDragCancel={() => {
         setActiveDragItem(null);
+        setDragPreview(null);
         if (elementDragOriginRef.current !== null) {
           editorStore
             .getState()
@@ -1280,6 +1310,32 @@ export function EditorWorkspace({
                   </defs>
                   <rect className={styles.canvasSurface} height="100%" width="100%" x={0} y={0} />
                   <rect fill="url(#tile-grid)" height="100%" width="100%" x={0} y={0} />
+                  {dragPreview === null
+                    ? null
+                    : (() => {
+                        const previewItem = getCatalogItem(dragPreview.catalogItemId);
+                        const previewTransform = [
+                          `translate(${dragPreview.position.x} ${dragPreview.position.y})`,
+                          `translate(${previewItem.svgDescriptor.viewBox.width / 2} ${previewItem.svgDescriptor.viewBox.height / 2})`,
+                          'rotate(0)',
+                          `translate(${-previewItem.svgDescriptor.viewBox.width / 2} ${-previewItem.svgDescriptor.viewBox.height / 2})`,
+                        ].join(' ');
+                        return (
+                          <g
+                            aria-hidden="true"
+                            className={styles.dragPreview}
+                            pointerEvents="none"
+                            transform={previewTransform}
+                          >
+                            <CatalogSvg
+                              decorative
+                              descriptor={previewItem.svgDescriptor}
+                              selected={false}
+                              sizing="intrinsic"
+                            />
+                          </g>
+                        );
+                      })()}
                   {activeElements.map((element) => {
                     let catalogItem: CatalogItem;
 

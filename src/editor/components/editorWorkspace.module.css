@@ -654,6 +654,16 @@
   opacity: 0.45;
 }
 
+.dragPreview {
+  opacity: 0.58;
+  pointer-events: none;
+}
+
+.dragPreview :global(svg) {
+  outline: 4px dashed var(--orange);
+  outline-offset: -4px;
+}
+
 .canvasElement:focus-visible .selectionFrame {
   stroke-width: 9;
 }
