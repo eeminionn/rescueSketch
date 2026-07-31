@@ -1,7 +1,13 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { createTrackJson, createTrackSvg, exportTrackPdf, exportTrackPng } from '../../export';
+import {
+  createTrackDxf,
+  createTrackJson,
+  createTrackSvg,
+  exportTrackPdf,
+  exportTrackPng,
+} from '../../export';
 import type { TrackDocumentV1 } from '../../domain';
 import styles from './exportActions.module.css';
 
@@ -115,6 +121,20 @@ export function ExportActions({ document }: ExportActionsProps) {
             type="button"
           >
             {pdfPending ? t('export.preparingPdf') : t('export.pdf')}
+          </button>
+          <button
+            onClick={() => {
+              downloadText(
+                createTrackDxf(document),
+                'rescueSketch-fabrication.dxf',
+                'application/dxf',
+              );
+              setOpen(false);
+            }}
+            role="menuitem"
+            type="button"
+          >
+            {t('export.dxf')}
           </button>
           {errorKind !== null ? (
             <p aria-live="polite" role="alert">

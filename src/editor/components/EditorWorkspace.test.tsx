@@ -167,6 +167,7 @@ describe('EditorWorkspace', () => {
     expect(
       screen.getByRole('menuitem', { name: 'Descargar PDF de fabricación' }),
     ).toBeInTheDocument();
+    expect(screen.getByRole('menuitem', { name: 'Descargar DXF R2000' })).toBeInTheDocument();
   });
 
   it('updates the editor and catalog from Spanish to English', async () => {
