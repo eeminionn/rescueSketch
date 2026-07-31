@@ -154,6 +154,18 @@ describe('EditorWorkspace', () => {
     expect(within(fabricationPanel).getByText('× 1')).toBeInTheDocument();
   });
 
+  it('offers canonical JSON, physical SVG, and PNG export actions', async () => {
+    const user = userEvent.setup();
+    renderEditor();
+
+    await user.click(screen.getByRole('button', { name: 'Abrir opciones de exportación' }));
+
+    expect(screen.getByRole('menu', { name: 'Exportar pista' })).toBeInTheDocument();
+    expect(screen.getByRole('menuitem', { name: 'Descargar JSON' })).toBeInTheDocument();
+    expect(screen.getByRole('menuitem', { name: 'Descargar SVG' })).toBeInTheDocument();
+    expect(screen.getByRole('menuitem', { name: 'Descargar PNG' })).toBeInTheDocument();
+  });
+
   it('updates the editor and catalog from Spanish to English', async () => {
     const user = userEvent.setup();
     renderEditor();

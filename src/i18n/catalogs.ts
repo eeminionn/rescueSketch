@@ -145,6 +145,15 @@ export const translationCatalogs = {
         toggleDimensions: 'Mostrar u ocultar cotas',
         toggleFabrication: 'Mostrar u ocultar informe de fabricación',
       },
+      export: {
+        title: 'Exportar pista',
+        open: 'Abrir opciones de exportación',
+        json: 'Descargar JSON',
+        svg: 'Descargar SVG',
+        png: 'Descargar PNG',
+        downloading: 'Preparando PNG…',
+        error: 'No se pudo preparar el PNG',
+      },
       fabrication: {
         panelEyebrow: 'Preparación',
         panelTitle: 'Fabricación',
@@ -430,6 +439,15 @@ export const translationCatalogs = {
         constructionAdviceTitle: 'Construction advice',
         toggleDimensions: 'Show or hide dimensions',
         toggleFabrication: 'Show or hide fabrication report',
+      },
+      export: {
+        title: 'Export track',
+        open: 'Open export options',
+        json: 'Download JSON',
+        svg: 'Download SVG',
+        png: 'Download PNG',
+        downloading: 'Preparing PNG…',
+        error: 'Could not prepare PNG',
       },
       fabrication: {
         panelEyebrow: 'Preparation',

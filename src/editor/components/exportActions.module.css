@@ -1,0 +1,74 @@
+.exportActions {
+  position: relative;
+}
+
+.exportButton {
+  align-items: center;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: #263b36;
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 1rem;
+  height: 31px;
+  justify-content: center;
+  min-width: 31px;
+}
+
+.exportButton:hover,
+.exportButton[aria-expanded='true'] {
+  background: #ecece5;
+  border-color: rgb(16 35 31 / 12%);
+}
+
+.exportMenu {
+  background: #fffef9;
+  border: 1px solid rgb(16 35 31 / 15%);
+  border-radius: 8px;
+  box-shadow: 0 12px 30px rgb(16 35 31 / 18%);
+  display: grid;
+  gap: 4px;
+  min-width: 160px;
+  padding: 6px;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 7px);
+  z-index: 40;
+}
+
+.exportMenu button {
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  color: #263b36;
+  cursor: pointer;
+  font-size: 0.62rem;
+  min-height: 32px;
+  padding: 0 9px;
+  text-align: left;
+}
+
+.exportMenu button:hover:not(:disabled),
+.exportMenu button:focus-visible {
+  background: #eef2ec;
+}
+
+.exportMenu button:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+.exportMenu p {
+  color: #a1433b;
+  font-size: 0.54rem;
+  line-height: 1.35;
+  margin: 4px 7px 2px;
+}
+
+@media (forced-colors: active) {
+  .exportMenu,
+  .exportMenu button {
+    border-color: CanvasText;
+  }
+}
