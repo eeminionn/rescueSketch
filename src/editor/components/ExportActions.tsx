@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { createTrackJson, createTrackSvg, exportTrackPng } from '../../export';
+import { createTrackJson, createTrackSvg, exportTrackPdf, exportTrackPng } from '../../export';
 import type { TrackDocumentV1 } from '../../domain';
 import styles from './exportActions.module.css';
 
@@ -28,7 +28,8 @@ export function ExportActions({ document }: ExportActionsProps) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [pngPending, setPngPending] = useState(false);
-  const [error, setError] = useState(false);
+  const [pdfPending, setPdfPending] = useState(false);
+  const [errorKind, setErrorKind] = useState<'png' | 'pdf' | null>(null);
 
   return (
     <div className={styles.exportActions}>
@@ -38,7 +39,7 @@ export function ExportActions({ document }: ExportActionsProps) {
         aria-label={t('export.open')}
         className={styles.exportButton}
         onClick={() => {
-          setError(false);
+          setErrorKind(null);
           setOpen((current) => !current);
         }}
         type="button"
@@ -74,7 +75,7 @@ export function ExportActions({ document }: ExportActionsProps) {
           <button
             disabled={pngPending}
             onClick={() => {
-              setError(false);
+              setErrorKind(null);
               setPngPending(true);
               void exportTrackPng(document)
                 .then((blob) => {
@@ -82,7 +83,7 @@ export function ExportActions({ document }: ExportActionsProps) {
                   setOpen(false);
                 })
                 .catch(() => {
-                  setError(true);
+                  setErrorKind('png');
                 })
                 .finally(() => {
                   setPngPending(false);
@@ -93,9 +94,31 @@ export function ExportActions({ document }: ExportActionsProps) {
           >
             {pngPending ? t('export.downloading') : t('export.png')}
           </button>
-          {error ? (
+          <button
+            disabled={pdfPending}
+            onClick={() => {
+              setErrorKind(null);
+              setPdfPending(true);
+              void exportTrackPdf(document)
+                .then((blob) => {
+                  downloadBlob(blob, 'rescueSketch-fabrication.pdf');
+                  setOpen(false);
+                })
+                .catch(() => {
+                  setErrorKind('pdf');
+                })
+                .finally(() => {
+                  setPdfPending(false);
+                });
+            }}
+            role="menuitem"
+            type="button"
+          >
+            {pdfPending ? t('export.preparingPdf') : t('export.pdf')}
+          </button>
+          {errorKind !== null ? (
             <p aria-live="polite" role="alert">
-              {t('export.error')}
+              {t(errorKind === 'pdf' ? 'export.pdfError' : 'export.error')}
             </p>
           ) : null}
         </div>
