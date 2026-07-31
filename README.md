@@ -35,7 +35,7 @@ La versión `v1.0` está planificada con:
 - inicio de sesión con GitHub mediante Supabase y publicación transparente de
   cada pista comunitaria por pull request.
 
-**Estado:** el proyecto está en construcción. Durante las versiones `0.x`, los
+**Estado:** el editor está publicado en [GitHub Pages](https://eeminionn.github.io/rescueSketch/). Durante las versiones `0.x`, los
 esquemas y las interfaces públicas pueden cambiar de forma incompatible.
 La versión `v0.2` ya incorpora el dashboard bilingüe, 24 piezas trazables, el
 lienzo SVG de 8 × 6 baldosas, niveles, teclado, drag and drop, undo/redo,
@@ -80,6 +80,14 @@ pnpm build
 Consulta [CONTRIBUTING.md](CONTRIBUTING.md) para el flujo issue → rama → pull
 request, las reglas de Conventional Commits y las convenciones de nombres.
 
+### Publicación
+
+Cada push a `main` ejecuta `.github/workflows/pages.yml` y publica la aplicación
+en GitHub Pages. El editor y las exportaciones funcionan sin credenciales; el
+inicio de sesión GitHub/Supabase se activa cuando el repositorio define las
+variables públicas `VITE_SUPABASE_URL` y `VITE_SUPABASE_PUBLISHABLE_KEY` y el
+proveedor GitHub tiene configurado el callback de Pages.
+
 ### Licencias
 
 | Material                                                                  | Licencia                                        |
@@ -113,7 +121,7 @@ The planned `v1.0` includes:
 - GitHub login through Supabase and transparent publication of each community
   track through a pull request.
 
-**Status:** the project is under construction. Schemas and public interfaces
+**Status:** the editor is live at [GitHub Pages](https://eeminionn.github.io/rescueSketch/). Schemas and public interfaces
 may change incompatibly throughout `0.x` releases.
 Version `v0.2` already includes the bilingual dashboard, 24 traceable pieces,
 the 8 × 6 SVG canvas, levels, keyboard access, drag and drop, undo/redo, the
@@ -157,6 +165,14 @@ pnpm build
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md) for the issue → branch → pull request
 workflow, Conventional Commits rules, and naming conventions.
+
+### Deployment
+
+Every push to `main` runs `.github/workflows/pages.yml` and publishes the app
+to GitHub Pages. The editor and exporters work without credentials; GitHub /
+Supabase sign-in is enabled once the repository defines the public
+`VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` variables and the GitHub
+provider has the Pages callback configured.
 
 ### Licensing
 
