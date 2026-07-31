@@ -195,10 +195,11 @@
   width: auto;
 }
 
-.canvasSizeControls input {
+.canvasSizeControls input,
+.canvasSizeControls select {
   border: 1px solid var(--panelLine);
   font-size: 0.72rem;
-  max-width: 82px;
+  max-width: 102px;
   padding: 4px 5px;
   width: 100%;
 }
@@ -256,7 +257,7 @@
 
 .editorLayout {
   display: grid;
-  grid-template-columns: 272px minmax(0, 1fr) auto;
+  grid-template-columns: minmax(330px, 1fr) minmax(0, 2fr) auto;
   min-height: 0;
   overflow: hidden;
 }
@@ -273,7 +274,7 @@
   border-right: 1px solid var(--panelLine);
   display: grid;
   grid-template-rows: auto auto auto minmax(0, 1fr) auto;
-  padding: 19px 15px 12px;
+  padding: 21px 18px 14px;
 }
 
 .catalogHeader,
@@ -321,8 +322,8 @@
   border-radius: 8px;
   display: flex;
   gap: 8px;
-  margin-top: 16px;
-  padding: 0 10px;
+  margin-top: 18px;
+  padding: 0 13px;
 }
 
 .searchField:focus-within {
@@ -339,8 +340,8 @@
   background: transparent;
   border: 0;
   color: inherit;
-  font-size: 0.72rem;
-  min-height: 37px;
+  font-size: 0.86rem;
+  min-height: 47px;
   min-width: 0;
   outline: none;
   width: 100%;
@@ -362,7 +363,7 @@
   color: #61716c;
   cursor: pointer;
   flex: none;
-  font-size: 0.61rem;
+  font-size: 0.68rem;
   font-weight: 740;
   padding: 6px 9px;
 }
@@ -388,9 +389,9 @@
   border-radius: 10px;
   display: grid;
   gap: 9px;
-  grid-template-columns: 50px minmax(0, 1fr) 28px;
-  min-height: 63px;
-  padding: 6px;
+  grid-template-columns: 58px minmax(0, 1fr) 32px;
+  min-height: 72px;
+  padding: 7px;
   transition:
     border-color 120ms ease,
     transform 120ms ease;
@@ -412,12 +413,12 @@
   border-radius: 7px;
   cursor: grab;
   display: flex;
-  height: 49px;
+  height: 57px;
   justify-content: center;
   overflow: hidden;
   padding: 4px;
   touch-action: none;
-  width: 49px;
+  width: 57px;
 }
 
 .palettePreview:active {
@@ -430,7 +431,7 @@
 
 .paletteItemCopy strong {
   display: block;
-  font-size: 0.7rem;
+  font-size: 0.78rem;
   line-height: 1.25;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -440,7 +441,7 @@
 .paletteItemCopy span {
   color: #71807b;
   display: block;
-  font-size: 0.58rem;
+  font-size: 0.67rem;
   margin-top: 4px;
 }
 
@@ -453,9 +454,9 @@
   cursor: pointer;
   display: inline-flex;
   font-size: 1rem;
-  height: 28px;
+  height: 32px;
   justify-content: center;
-  width: 28px;
+  width: 32px;
 }
 
 .addItemButton:hover {
@@ -957,7 +958,7 @@
 
 @media (max-width: 1180px) {
   .editorLayout {
-    grid-template-columns: 228px minmax(0, 1fr) auto;
+    grid-template-columns: minmax(280px, 1fr) minmax(0, 2fr) auto;
   }
 
   .inspector {
@@ -976,7 +977,7 @@
 
 @media (max-width: 930px) {
   .editorLayout {
-    grid-template-columns: 205px minmax(0, 1fr);
+    grid-template-columns: minmax(250px, 1fr) minmax(0, 2fr);
   }
 
   .inspector {

@@ -42,7 +42,10 @@ export const gapLineDescriptor = tileDescriptor([
   linePath('M 225 150 L 300 150'),
 ]);
 
-export const diagonalLineDescriptor = tileDescriptor([linePath('M 0 300 L 300 0')]);
+// A diagonal begins at the centre of one tile edge.  It is deliberately not
+// drawn corner-to-corner: that would leave a route discontinuity when placed
+// next to the standard centre-line tiles.
+export const diagonalLineDescriptor = tileDescriptor([linePath('M 0 150 L 300 0')]);
 
 export const wavyLineDescriptor = tileDescriptor([
   linePath('M 0 150 C 50 60 100 240 150 150 S 250 60 300 150'),
@@ -52,8 +55,10 @@ export const threeWayIntersectionDescriptor = tileDescriptor([
   linePath('M 0 150 L 300 150 M 150 150 L 150 300'),
   {
     type: 'rect',
-    x: 113,
-    y: 173,
+    // The official 25 mm marker sits immediately before the corner of the
+    // intersection, touching the route instead of floating beside it.
+    x: 125,
+    y: 150,
     width: 25,
     height: 25,
     fill: 'greenMarker',
@@ -66,8 +71,8 @@ export const fourWayIntersectionDescriptor = tileDescriptor([
   linePath('M 0 150 L 300 150 M 150 0 L 150 300'),
   {
     type: 'rect',
-    x: 173,
-    y: 113,
+    x: 125,
+    y: 150,
     width: 25,
     height: 25,
     fill: 'greenMarker',
@@ -76,12 +81,24 @@ export const fourWayIntersectionDescriptor = tileDescriptor([
   },
 ]);
 
+// An unmarked crossing is valid: the robot continues forward when there is
+// no green marker at an intersection (Rules 2026, §3.6.3).
+export const plainFourWayIntersectionDescriptor = tileDescriptor([
+  linePath('M 0 150 L 300 150 M 150 0 L 150 300'),
+]);
+
+// The start is a checkpoint and is represented as a plain black T.  It is
+// intentionally marker-free so it reads as a route connection in top view.
+export const startTileDescriptor = tileDescriptor([
+  linePath('M 0 150 L 300 150 M 150 150 L 150 300'),
+]);
+
 export const deadEndIntersectionDescriptor = tileDescriptor([
   linePath('M 0 150 L 300 150 M 150 150 L 150 300'),
   {
     type: 'rect',
-    x: 95,
-    y: 173,
+    x: 100,
+    y: 150,
     width: 25,
     height: 25,
     fill: 'greenMarker',
@@ -90,8 +107,8 @@ export const deadEndIntersectionDescriptor = tileDescriptor([
   },
   {
     type: 'rect',
-    x: 95,
-    y: 102,
+    x: 100,
+    y: 125,
     width: 25,
     height: 25,
     fill: 'greenMarker',
@@ -115,18 +132,20 @@ export const goalTileDescriptor = tileDescriptor([
 ]);
 
 export const speedBumpDescriptor = tileDescriptor([
+  linePath('M 0 150 L 300 150'),
   {
     type: 'rect',
-    x: 24,
-    y: 90,
-    width: 252,
-    height: 120,
+    x: 132,
+    y: 48,
+    width: 36,
+    height: 204,
     radius: 12,
     fill: 'hazard',
     stroke: 'structure',
     strokeWidthMm: 4,
   },
-  linePath('M 24 150 L 276 150'),
+  // The black segment is printed on the bump where it crosses the route.
+  linePath('M 132 150 L 168 150'),
 ]);
 
 export const debrisDescriptor = tileDescriptor([
@@ -160,15 +179,17 @@ export const rampDescriptor = tileDescriptor([
   {
     type: 'polygon',
     points: [
-      { x: 24, y: 240 },
-      { x: 276, y: 240 },
-      { x: 276, y: 72 },
+      { x: 24, y: 276 },
+      { x: 276, y: 276 },
+      { x: 276, y: 24 },
     ],
     fill: 'structure',
     stroke: 'line',
     strokeWidthMm: 4,
   },
-  linePath('M 24 156 L 276 156'),
+  linePath('M 30 270 L 270 30'),
+  // A compact arrow reinforces the uphill route direction in the top view.
+  linePath('M 190 30 L 270 30 L 270 110', 9),
 ]);
 
 export const bridgeDescriptor = tileDescriptor([
@@ -245,17 +266,20 @@ export const seesawDescriptor = tileDescriptor([
   linePath('M 33 204 L 267 102'),
 ]);
 
-export const checkpointDescriptor = tileDescriptor([
-  {
-    type: 'circle',
-    centerX: 150,
-    centerY: 150,
-    radius: 35,
-    fill: 'checkpoint',
-    stroke: 'line',
-    strokeWidthMm: 3,
-  },
-]);
+export const checkpointDescriptor: SvgDescriptor = {
+  viewBox: { x: 0, y: 0, width: 70, height: 70 },
+  primitives: [
+    {
+      type: 'circle',
+      centerX: 35,
+      centerY: 35,
+      radius: 35,
+      fill: 'none',
+      stroke: 'checkpoint',
+      strokeWidthMm: 3,
+    },
+  ],
+};
 
 export const evacuationZoneDescriptor: SvgDescriptor = {
   viewBox: { x: 0, y: 0, width: 1_200, height: 900 },

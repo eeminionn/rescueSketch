@@ -35,6 +35,7 @@ import {
   type Point,
   type TrackDocumentV1,
   type TrackStructure,
+  type TrackTile,
 } from '../../domain';
 import {
   createFabricationReport,
@@ -80,6 +81,10 @@ const structureKindByCatalogItemId: Readonly<Record<string, TrackStructure['kind
 const minimumZoom = 0.45;
 const maximumZoom = 1.8;
 const zoomStep = 0.15;
+const hiddenPaletteItemIds = new Set(['evacuationExit', 'pillar']);
+const checkpointItemId = 'checkpoint';
+const checkpointMagnetDistanceMm = 180;
+const canvasDimensionOptions = Array.from({ length: 100 }, (_, index) => (index + 1) * tileSizeMm);
 
 function formatMeasurementValue(value: number, language: AppLanguage): string {
   return new Intl.NumberFormat(language, {
@@ -154,6 +159,100 @@ function getNextPosition(document: TrackDocumentV1): Point {
   };
 }
 
+function isCheckpointItem(item: CatalogItem): boolean {
+  return item.id === checkpointItemId;
+}
+
+function isCheckpointTargetTile(tile: TrackTile): boolean {
+  try {
+    const item = getCatalogItem(tile.catalogItemId);
+    const { width, height } = item.svgDescriptor.viewBox;
+
+    return (
+      item.kind === 'tile' &&
+      width === tileSizeMm &&
+      height === tileSizeMm &&
+      !isCheckpointItem(item)
+    );
+  } catch {
+    return false;
+  }
+}
+
+function getCheckpointAnchorPositions(
+  document: TrackDocumentV1,
+  levelId: string,
+  checkpointSizeMm: number,
+): Point[] {
+  return document.tiles
+    .filter((tile) => tile.levelId === levelId && isCheckpointTargetTile(tile))
+    .flatMap((tile) => [
+      { x: tile.position.x, y: tile.position.y },
+      { x: tile.position.x + tileSizeMm - checkpointSizeMm, y: tile.position.y },
+      { x: tile.position.x, y: tile.position.y + tileSizeMm - checkpointSizeMm },
+      {
+        x: tile.position.x + tileSizeMm - checkpointSizeMm,
+        y: tile.position.y + tileSizeMm - checkpointSizeMm,
+      },
+    ]);
+}
+
+function getCheckpointMagneticPosition(
+  document: TrackDocumentV1,
+  levelId: string,
+  requestedPosition: Point,
+  checkpointSizeMm: number,
+): Point | null {
+  const anchors = getCheckpointAnchorPositions(document, levelId, checkpointSizeMm);
+  const nearest = anchors.reduce<{ position: Point; distanceMm: number } | null>(
+    (currentNearest, position) => {
+      const distanceMm = Math.hypot(
+        position.x - requestedPosition.x,
+        position.y - requestedPosition.y,
+      );
+
+      return currentNearest === null || distanceMm < currentNearest.distanceMm
+        ? { position, distanceMm }
+        : currentNearest;
+    },
+    null,
+  );
+
+  return nearest !== null && nearest.distanceMm <= checkpointMagnetDistanceMm
+    ? nearest.position
+    : null;
+}
+
+function getDefaultCheckpointPosition(
+  document: TrackDocumentV1,
+  levelId: string,
+  checkpointSizeMm: number,
+): Point | null {
+  const anchors = getCheckpointAnchorPositions(document, levelId, checkpointSizeMm);
+
+  // The keyboard + action has no pointer position, so attach the marker to
+  // the top-right inner corner of the latest available tile.
+  return anchors.length < 3 ? null : (anchors.at(-3) ?? null);
+}
+
+function getCatalogPlacementPosition(
+  document: TrackDocumentV1,
+  levelId: string,
+  item: CatalogItem,
+  requestedPosition: Point,
+): Point | null {
+  if (isCheckpointItem(item)) {
+    return getCheckpointMagneticPosition(
+      document,
+      levelId,
+      requestedPosition,
+      item.svgDescriptor.viewBox.width,
+    );
+  }
+
+  return snapPoint(requestedPosition, tileSizeMm);
+}
+
 function getElementCatalogItem(document: TrackDocumentV1, elementId: string): CatalogItem | null {
   const tile = document.tiles.find(({ id }) => id === elementId);
 
@@ -189,7 +288,24 @@ function insertCatalogItem(
 ): boolean {
   const item = getCatalogItem(catalogItemId);
   const state = editorStore.getState();
-  const position = requestedPosition ?? getNextPosition(state.document);
+  const defaultPosition = isCheckpointItem(item)
+    ? getDefaultCheckpointPosition(
+        state.document,
+        state.activeLevelId,
+        item.svgDescriptor.viewBox.width,
+      )
+    : getNextPosition(state.document);
+  const position = getCatalogPlacementPosition(
+    state.document,
+    state.activeLevelId,
+    item,
+    requestedPosition ?? defaultPosition ?? getNextPosition(state.document),
+  );
+
+  if (position === null) {
+    return false;
+  }
+
   const id = createElementId(catalogItemId);
   const parameters = getDefaultParameters(item);
   const structureKind = structureKindByCatalogItemId[catalogItemId];
@@ -629,10 +745,6 @@ export function EditorWorkspace({
   const [wasteRatio, setWasteRatio] = useState(0.1);
   const [activeDragItem, setActiveDragItem] = useState<CatalogItem | null>(null);
   const [dragPreview, setDragPreview] = useState<DragPreview | null>(null);
-  const [canvasDraft, setCanvasDraft] = useState({
-    widthMm: String(document.canvas.widthMm),
-    heightMm: String(document.canvas.heightMm),
-  });
   const canvasViewportRef = useRef<HTMLDivElement>(null);
   const elementDragOriginRef = useRef<ElementDragOrigin | null>(null);
   const { isOver, setNodeRef: setCanvasDropRef } = useDroppable({ id: 'track-canvas' });
@@ -646,6 +758,7 @@ export function EditorWorkspace({
 
     return rescueSketchCatalog.items.filter(
       (item) =>
+        !hiddenPaletteItemIds.has(item.id) &&
         (activeCategory === 'all' || item.category === activeCategory) &&
         (normalizedQuery.length === 0 ||
           item.names[language].toLocaleLowerCase(language).includes(normalizedQuery) ||
@@ -781,27 +894,34 @@ export function EditorWorkspace({
   };
 
   const updateCanvasDimension = (axis: 'widthMm' | 'heightMm', rawValue: string) => {
-    setCanvasDraft((current) => ({ ...current, [axis]: rawValue }));
     const value = Number(rawValue);
-    if (!Number.isFinite(value) || value < tileSizeMm || value > 30_000) return;
-    const roundedValue = Math.round(value / 10) * 10;
+    if (
+      !Number.isFinite(value) ||
+      value < tileSizeMm ||
+      value > 30_000 ||
+      value % tileSizeMm !== 0
+    ) {
+      return;
+    }
+
     editorStore
       .getState()
-      .replaceDocument(
-        { ...document, canvas: { ...document.canvas, [axis]: roundedValue } },
-        false,
-      );
+      .replaceDocument({ ...document, canvas: { ...document.canvas, [axis]: value } }, false);
   };
 
   const handleDragStart = (event: DragStartEvent) => {
     const dragData = event.active.data.current as DragData | undefined;
 
     if (dragData?.catalogItemId !== undefined) {
-      setActiveDragItem(getCatalogItem(dragData.catalogItemId));
-      setDragPreview({
-        catalogItemId: dragData.catalogItemId,
-        position: getNextPosition(document),
-      });
+      const item = getCatalogItem(dragData.catalogItemId);
+      setActiveDragItem(item);
+      const position = getCatalogPlacementPosition(
+        document,
+        activeLevelId,
+        item,
+        getNextPosition(document),
+      );
+      setDragPreview(position === null ? null : { catalogItemId: item.id, position });
     } else if (dragData?.elementId !== undefined) {
       setActiveDragItem(getElementCatalogItem(document, dragData.elementId));
       const element = [...document.tiles, ...document.structures].find(
@@ -830,34 +950,42 @@ export function EditorWorkspace({
     if (dragData.sourceType === 'catalog' && dragData.catalogItemId !== undefined) {
       const translatedRect = event.active.rect.current.translated;
       if (translatedRect === null) return;
+      const item = getCatalogItem(dragData.catalogItemId);
       const relativeX = translatedRect.left + translatedRect.width / 2 - svgRect.left;
       const relativeY = translatedRect.top + translatedRect.height / 2 - svgRect.top;
-      setDragPreview({
-        catalogItemId: dragData.catalogItemId,
-        position: snapPoint(
-          {
-            x: Math.max(0, (relativeX / svgRect.width) * document.canvas.widthMm - tileSizeMm / 2),
-            y: Math.max(
-              0,
-              (relativeY / svgRect.height) * document.canvas.heightMm - tileSizeMm / 2,
-            ),
-          },
-          tileSizeMm,
+      const position = getCatalogPlacementPosition(document, activeLevelId, item, {
+        x: Math.max(
+          0,
+          (relativeX / svgRect.width) * document.canvas.widthMm -
+            item.svgDescriptor.viewBox.width / 2,
+        ),
+        y: Math.max(
+          0,
+          (relativeY / svgRect.height) * document.canvas.heightMm -
+            item.svgDescriptor.viewBox.height / 2,
         ),
       });
+      setDragPreview(position === null ? null : { catalogItemId: item.id, position });
       return;
     }
 
     if (dragData.elementId === undefined || origin === null) return;
 
-    const snappedPosition = snapPoint(
-      {
-        x: origin.position.x + event.delta.x * millimetresPerPixel,
-        y: origin.position.y + event.delta.y * millimetresPerPixel,
-      },
-      tileSizeMm,
+    const item = getElementCatalogItem(document, dragData.elementId);
+    if (item === null) return;
+    const requestedPosition = {
+      x: origin.position.x + event.delta.x * millimetresPerPixel,
+      y: origin.position.y + event.delta.y * millimetresPerPixel,
+    };
+    const snappedPosition = getCatalogPlacementPosition(
+      document,
+      activeLevelId,
+      item,
+      requestedPosition,
     );
-    editorStore.getState().moveElementTo(dragData.elementId, snappedPosition, { snap: false });
+    if (snappedPosition !== null) {
+      editorStore.getState().moveElementTo(dragData.elementId, snappedPosition, { snap: false });
+    }
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -886,12 +1014,23 @@ export function EditorWorkspace({
     const svgRect = svg.getBoundingClientRect();
     const relativeX = translatedRect.left + translatedRect.width / 2 - svgRect.left;
     const relativeY = translatedRect.top + translatedRect.height / 2 - svgRect.top;
-    const position = {
-      x: Math.max(0, (relativeX / svgRect.width) * document.canvas.widthMm - tileSizeMm / 2),
-      y: Math.max(0, (relativeY / svgRect.height) * document.canvas.heightMm - tileSizeMm / 2),
-    };
+    const item = getCatalogItem(dragData.catalogItemId);
+    const position = getCatalogPlacementPosition(document, activeLevelId, item, {
+      x: Math.max(
+        0,
+        (relativeX / svgRect.width) * document.canvas.widthMm -
+          item.svgDescriptor.viewBox.width / 2,
+      ),
+      y: Math.max(
+        0,
+        (relativeY / svgRect.height) * document.canvas.heightMm -
+          item.svgDescriptor.viewBox.height / 2,
+      ),
+    });
 
-    insertCatalogItem(editorStore, dragData.catalogItemId, snapPoint(position, tileSizeMm));
+    if (position !== null) {
+      insertCatalogItem(editorStore, dragData.catalogItemId, position);
+    }
   };
 
   const beginCanvasPan = (event: ReactPointerEvent<HTMLDivElement>) => {
@@ -982,36 +1121,36 @@ export function EditorWorkspace({
                 <legend>{t('editor.canvasSizeTitle')}</legend>
                 <label>
                   <span>{t('editor.canvasWidth')}</span>
-                  <input
+                  <select
                     aria-label={t('editor.canvasWidth')}
-                    min={tileSizeMm}
-                    max={30_000}
-                    onBlur={(event) => updateCanvasDimension('widthMm', event.currentTarget.value)}
                     onChange={(event) => {
-                      const value = event.currentTarget.value;
-                      setCanvasDraft((current) => ({ ...current, widthMm: value }));
+                      updateCanvasDimension('widthMm', event.currentTarget.value);
                     }}
-                    step={10}
-                    type="number"
-                    value={canvasDraft.widthMm}
-                  />
+                    value={document.canvas.widthMm}
+                  >
+                    {canvasDimensionOptions.map((dimensionMm) => (
+                      <option key={dimensionMm} value={dimensionMm}>
+                        {formatMeasurementValue(dimensionMm, language)} mm
+                      </option>
+                    ))}
+                  </select>
                 </label>
                 <span aria-hidden="true">×</span>
                 <label>
                   <span>{t('editor.canvasHeight')}</span>
-                  <input
+                  <select
                     aria-label={t('editor.canvasHeight')}
-                    min={tileSizeMm}
-                    max={30_000}
-                    onBlur={(event) => updateCanvasDimension('heightMm', event.currentTarget.value)}
                     onChange={(event) => {
-                      const value = event.currentTarget.value;
-                      setCanvasDraft((current) => ({ ...current, heightMm: value }));
+                      updateCanvasDimension('heightMm', event.currentTarget.value);
                     }}
-                    step={10}
-                    type="number"
-                    value={canvasDraft.heightMm}
-                  />
+                    value={document.canvas.heightMm}
+                  >
+                    {canvasDimensionOptions.map((dimensionMm) => (
+                      <option key={dimensionMm} value={dimensionMm}>
+                        {formatMeasurementValue(dimensionMm, language)} mm
+                      </option>
+                    ))}
+                  </select>
                 </label>
                 <span aria-hidden="true">mm</span>
               </fieldset>

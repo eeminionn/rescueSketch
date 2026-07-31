@@ -104,19 +104,37 @@ describe('EditorWorkspace', () => {
     ).toBeInTheDocument();
   });
 
-  it('starts with every catalog piece in the Todo category and edits canvas dimensions', async () => {
+  it('starts with the curated Todo category and edits canvas dimensions by tile multiple', async () => {
     const user = userEvent.setup();
     renderEditor();
 
     expect(screen.getByRole('tab', { name: 'Todo' })).toHaveAttribute('aria-selected', 'true');
     expect(within(getCatalogPanel()).getByText('Línea recta')).toBeInTheDocument();
     expect(within(getCatalogPanel()).getByText('Víctima viva')).toBeInTheDocument();
+    expect(within(getCatalogPanel()).getByText('Inicio')).toBeInTheDocument();
+    expect(within(getCatalogPanel()).queryByText('Salida de evacuación')).not.toBeInTheDocument();
+    expect(within(getCatalogPanel()).queryByText('Pilar')).not.toBeInTheDocument();
 
-    const width = screen.getByRole('spinbutton', { name: 'Ancho del lienzo (mm)' });
-    await user.clear(width);
-    await user.type(width, '3000');
-    await user.tab();
+    const width = screen.getByRole('combobox', { name: 'Ancho del lienzo (mm)' });
+    await user.selectOptions(width, '3000');
     expect(screen.getByRole('img')).toHaveAttribute('viewBox', '0 0 3000 1800');
+  });
+
+  it('adds a transparent checkpoint magnetically inside a corner of an existing tile', async () => {
+    const user = userEvent.setup();
+    renderEditor();
+
+    await user.click(getAddButton('Línea recta'));
+    await user.click(getAddButton('Marcador de checkpoint'));
+
+    const checkpoint = document.querySelector(
+      'g[role="button"] svg[data-width-mm="70"][data-height-mm="70"]',
+    );
+    expect(checkpoint).toBeInTheDocument();
+    expect(checkpoint?.closest('g[role="button"]')).toHaveAttribute(
+      'transform',
+      expect.stringContaining('translate(230 0)'),
+    );
   });
 
   it('clears all pieces with confirmation', async () => {
