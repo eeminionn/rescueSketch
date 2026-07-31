@@ -169,7 +169,7 @@ workflow, Conventional Commits rules, and naming conventions.
 ### Deployment
 
 Every push to `main` runs `.github/workflows/pages.yml` and publishes the app
-to GitHub Pages. The editor and exporters work without credentials; GitHub / 
+to GitHub Pages. The editor and exporters work without credentials; GitHub /
 Supabase sign-in is enabled once the repository defines the public
 `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` variables and the GitHub
 provider has the Pages callback configured.
