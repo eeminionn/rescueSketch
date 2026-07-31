@@ -164,6 +164,9 @@ describe('EditorWorkspace', () => {
     expect(screen.getByRole('menuitem', { name: 'Descargar JSON' })).toBeInTheDocument();
     expect(screen.getByRole('menuitem', { name: 'Descargar SVG' })).toBeInTheDocument();
     expect(screen.getByRole('menuitem', { name: 'Descargar PNG' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('menuitem', { name: 'Descargar PDF de fabricación' }),
+    ).toBeInTheDocument();
   });
 
   it('updates the editor and catalog from Spanish to English', async () => {

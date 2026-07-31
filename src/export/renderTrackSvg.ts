@@ -100,6 +100,17 @@ function renderElement(element: TrackTile | TrackStructure): string {
   return `<g data-element-id="${escapeXml(element.id)}" data-catalog-item-id="${escapeXml(item.id)}" transform="${transform}">${primitives}</g>`;
 }
 
+export function renderTrackElementSvg(element: TrackTile | TrackStructure): string {
+  const item = getItem(element);
+
+  if (item === undefined) {
+    throw new RangeError(`Unknown catalog element: ${element.id}`);
+  }
+
+  const { width, height } = item.svgDescriptor.viewBox;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}mm" height="${height}mm" viewBox="0 0 ${width} ${height}"><g id="element">${renderElement({ ...element, position: { x: 0, y: 0 } })}</g></svg>`;
+}
+
 function renderGrid(widthMm: number, heightMm: number, tileSizeMm: number): string {
   const lines: string[] = [];
 

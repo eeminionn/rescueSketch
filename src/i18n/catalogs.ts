@@ -151,8 +151,11 @@ export const translationCatalogs = {
         json: 'Descargar JSON',
         svg: 'Descargar SVG',
         png: 'Descargar PNG',
+        pdf: 'Descargar PDF de fabricación',
         downloading: 'Preparando PNG…',
+        preparingPdf: 'Preparando PDF…',
         error: 'No se pudo preparar el PNG',
+        pdfError: 'No se pudo preparar el PDF',
       },
       fabrication: {
         panelEyebrow: 'Preparación',
@@ -446,8 +449,11 @@ export const translationCatalogs = {
         json: 'Download JSON',
         svg: 'Download SVG',
         png: 'Download PNG',
+        pdf: 'Download fabrication PDF',
         downloading: 'Preparing PNG…',
+        preparingPdf: 'Preparing PDF…',
         error: 'Could not prepare PNG',
+        pdfError: 'Could not prepare PDF',
       },
       fabrication: {
         panelEyebrow: 'Preparation',
