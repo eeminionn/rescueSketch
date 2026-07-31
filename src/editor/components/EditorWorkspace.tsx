@@ -8,6 +8,7 @@ import {
   useSensor,
   useSensors,
   type DragEndEvent,
+  type DragMoveEvent,
   type DragStartEvent,
 } from '@dnd-kit/core';
 import {
@@ -112,6 +113,11 @@ interface DragData {
   catalogItemId?: string;
   elementId?: string;
   sourceType: 'catalog' | 'element';
+}
+
+interface ElementDragOrigin {
+  elementId: string;
+  position: Point;
 }
 
 function createElementId(catalogItemId: string): string {
@@ -621,6 +627,7 @@ export function EditorWorkspace({
     heightMm: String(document.canvas.heightMm),
   });
   const canvasViewportRef = useRef<HTMLDivElement>(null);
+  const elementDragOriginRef = useRef<ElementDragOrigin | null>(null);
   const { isOver, setNodeRef: setCanvasDropRef } = useDroppable({ id: 'track-canvas' });
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
@@ -786,16 +793,47 @@ export function EditorWorkspace({
       setActiveDragItem(getCatalogItem(dragData.catalogItemId));
     } else if (dragData?.elementId !== undefined) {
       setActiveDragItem(getElementCatalogItem(document, dragData.elementId));
+      const element = [...document.tiles, ...document.structures].find(
+        ({ id }) => id === dragData.elementId,
+      );
+      if (element !== undefined) {
+        elementDragOriginRef.current = { elementId: element.id, position: element.position };
+        editorStore.getState().setSelection([element.id]);
+        editorStore.getState().beginTransaction(`drag-${element.id}`);
+      }
     }
+  };
+
+  const handleDragMove = (event: DragMoveEvent) => {
+    const dragData = event.active.data.current as DragData | undefined;
+    const origin = elementDragOriginRef.current;
+    const viewport = canvasViewportRef.current;
+    const svg = viewport?.querySelector('svg');
+    const svgRect = svg?.getBoundingClientRect();
+
+    if (
+      dragData?.sourceType !== 'element' ||
+      dragData.elementId === undefined ||
+      origin === null ||
+      svgRect === undefined ||
+      svgRect.width === 0
+    ) {
+      return;
+    }
+
+    const millimetresPerPixel = document.canvas.widthMm / svgRect.width;
+    editorStore.getState().moveElementTo(
+      dragData.elementId,
+      {
+        x: origin.position.x + event.delta.x * millimetresPerPixel,
+        y: origin.position.y + event.delta.y * millimetresPerPixel,
+      },
+      { snap: true },
+    );
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
     setActiveDragItem(null);
-
-    if (event.over?.id !== 'track-canvas') {
-      return;
-    }
-
     const dragData = event.active.data.current as DragData | undefined;
     const viewport = canvasViewportRef.current;
 
@@ -804,15 +842,8 @@ export function EditorWorkspace({
     }
 
     if (dragData.sourceType === 'element' && dragData.elementId !== undefined) {
-      const svg = viewport.querySelector('svg');
-      const svgRect = svg?.getBoundingClientRect();
-      const millimetresPerPixel =
-        svgRect === undefined || svgRect.width === 0 ? 1 : document.canvas.widthMm / svgRect.width;
-      editorStore.getState().setSelection([dragData.elementId]);
-      editorStore.getState().moveSelectionBy({
-        x: event.delta.x * millimetresPerPixel,
-        y: event.delta.y * millimetresPerPixel,
-      });
+      editorStore.getState().commitTransaction(`drag-${dragData.elementId}`);
+      elementDragOriginRef.current = null;
       return;
     }
 
@@ -876,8 +907,15 @@ export function EditorWorkspace({
     <DndContext
       onDragCancel={() => {
         setActiveDragItem(null);
+        if (elementDragOriginRef.current !== null) {
+          editorStore
+            .getState()
+            .cancelTransaction(`drag-${elementDragOriginRef.current.elementId}`);
+          elementDragOriginRef.current = null;
+        }
       }}
       onDragEnd={handleDragEnd}
+      onDragMove={handleDragMove}
       onDragStart={handleDragStart}
       sensors={sensors}
     >
