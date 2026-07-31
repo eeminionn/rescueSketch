@@ -46,6 +46,7 @@ import { CatalogSvg } from '../rendering';
 import { createEditorStore, type EditorStore } from '../state';
 import { DimensionOverlay } from './DimensionOverlay';
 import styles from './editorWorkspace.module.css';
+import { ExportActions } from './ExportActions';
 import { FabricationPanel } from './FabricationPanel';
 import { ValidationPanel } from './ValidationPanel';
 
@@ -1020,6 +1021,7 @@ export function EditorWorkspace({
                   >
                     ⌫
                   </button>
+                  <ExportActions document={document} />
                 </div>
 
                 <div className={styles.levelControls}>
