@@ -15,6 +15,8 @@ const requiredCatalogIds = [
   'wavyLine',
   'threeWayIntersection',
   'fourWayIntersection',
+  'plainFourWayIntersection',
+  'startTile',
   'deadEndIntersection',
   'goalTile',
   'speedBump',
@@ -97,7 +99,7 @@ describe('RescueSketch catalog', () => {
       'wavyLine',
       'goalTile',
     ]);
-    expect(getCatalogItemsByCategory('intersection')).toHaveLength(3);
+    expect(getCatalogItemsByCategory('intersection')).toHaveLength(5);
     expect(getCatalogItemsByCategory('hazard')).toHaveLength(3);
     expect(getCatalogItemsByCategory('level')).toHaveLength(4);
     expect(getCatalogItemsByCategory('evacuation')).toHaveLength(5);
@@ -121,6 +123,8 @@ describe('RescueSketch catalog', () => {
       'wavyLine',
       'threeWayIntersection',
       'fourWayIntersection',
+      'plainFourWayIntersection',
+      'startTile',
       'deadEndIntersection',
       'goalTile',
     ]) {

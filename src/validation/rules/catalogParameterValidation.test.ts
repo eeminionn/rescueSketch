@@ -210,7 +210,7 @@ describe('validateCatalogParameters', () => {
     );
 
     expect(boundaryFixtures).toHaveLength(declaredBoundaryCount);
-    expect(boundaryFixtures).toHaveLength(131);
+    expect(boundaryFixtures).toHaveLength(147);
     expect(new Set(boundaryFixtures.map(({ boundary }) => boundary))).toEqual(
       new Set(['minimum', 'maximum', 'maximumExclusive']),
     );

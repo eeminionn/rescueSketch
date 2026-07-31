@@ -21,9 +21,11 @@ const routedCatalogItemIds = new Set([
   'gapLine',
   'goalTile',
   'obstacle',
+  'plainFourWayIntersection',
   'ramp',
   'seesaw',
   'speedBump',
+  'startTile',
   'straightLine',
   'threeWayIntersection',
   'wavyLine',
@@ -120,6 +122,8 @@ describe('resolveCatalogGeometry', () => {
     ]);
     expect(resolveCatalogGeometry('threeWayIntersection')).toHaveLength(3);
     expect(resolveCatalogGeometry('fourWayIntersection')).toHaveLength(4);
+    expect(resolveCatalogGeometry('plainFourWayIntersection')).toHaveLength(4);
+    expect(resolveCatalogGeometry('startTile')).toHaveLength(3);
     expect(resolveCatalogGeometry('deadEndIntersection')).toHaveLength(3);
     expect(getGeometryLength(resolveCatalogGeometry('goalTile'))).toBe(137.5);
     expect(getGeometryLength(resolveCatalogGeometry('evacuationEntrance'))).toBe(137.5);
@@ -135,7 +139,7 @@ describe('resolveCatalogGeometry', () => {
           cornerRadiusMm: 20,
         }),
       ),
-    ).toBe(240);
+    ).toBe(300);
     expect(
       getGeometryLength(
         resolveCatalogGeometry('obstacle', {
@@ -145,9 +149,10 @@ describe('resolveCatalogGeometry', () => {
       ),
     ).toBe(180);
 
-    for (const catalogItemId of ['debris', 'ramp', 'bridge', 'seesaw']) {
+    for (const catalogItemId of ['debris', 'bridge', 'seesaw']) {
       expect(getGeometryLength(resolveCatalogGeometry(catalogItemId))).toBe(300);
     }
+    expect(getGeometryLength(resolveCatalogGeometry('ramp'))).toBeCloseTo(Math.SQRT2 * 300, 8);
   });
 
   it.each([

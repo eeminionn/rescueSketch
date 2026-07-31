@@ -210,7 +210,7 @@ function resolveDiagonalLine(
     throw new RangeError(`edgeInsetMm (${edgeInsetMm} mm) must remain below both tile dimensions.`);
   }
 
-  return [line({ x: 0, y: heightMm - edgeInsetMm }, { x: widthMm - edgeInsetMm, y: 0 })];
+  return [line({ x: 0, y: heightMm / 2 }, { x: widthMm - edgeInsetMm, y: edgeInsetMm })];
 }
 
 function resolveWavyLine(
@@ -340,8 +340,9 @@ function resolveSpeedBumpLine(
     );
   }
 
-  const startX = (availableWidthMm - widthMm) / 2;
-  return horizontalLine(startX, startX + widthMm, availableDepthMm / 2);
+  // The route remains continuous across the speed bump; the short black
+  // overlap is rendered on the physical bump, not treated as a line gap.
+  return horizontalLine(0, availableWidthMm, availableDepthMm / 2);
 }
 
 function resolveObstacleLine(
@@ -368,6 +369,11 @@ function resolveObstacleLine(
 function resolveFullWidthLine(catalogItem: CatalogItem): GeometrySegment[] {
   const { widthMm, heightMm } = getViewBoxDimensions(catalogItem);
   return horizontalLine(0, widthMm, heightMm / 2);
+}
+
+function resolveRampLine(catalogItem: CatalogItem): GeometrySegment[] {
+  const { widthMm, heightMm } = getViewBoxDimensions(catalogItem);
+  return [line({ x: 0, y: heightMm }, { x: widthMm, y: 0 })];
 }
 
 function resolveEvacuationMarkerLine(
@@ -410,18 +416,21 @@ export function resolveCatalogGeometry(
       return resolveWavyLine(catalogItem, parameters);
     case 'threeWayIntersection':
     case 'deadEndIntersection':
+    case 'startTile':
       return resolveIntersection(catalogItem, parameters, 3);
     case 'fourWayIntersection':
+    case 'plainFourWayIntersection':
       return resolveIntersection(catalogItem, parameters, 4);
     case 'goalTile':
       return resolveGoalLine(catalogItem, parameters);
     case 'speedBump':
       return resolveSpeedBumpLine(catalogItem, parameters);
     case 'debris':
-    case 'ramp':
     case 'bridge':
     case 'seesaw':
       return resolveFullWidthLine(catalogItem);
+    case 'ramp':
+      return resolveRampLine(catalogItem);
     case 'obstacle':
       return resolveObstacleLine(catalogItem, parameters);
     case 'evacuationEntrance':
