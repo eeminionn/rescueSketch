@@ -34,12 +34,19 @@ import {
   type TrackDocumentV1,
   type TrackStructure,
 } from '../../domain';
+import {
+  createFabricationReport,
+  resolveCatalogGeometry,
+  type FabricationElementMeasurement,
+} from '../../fabrication';
 import { rescueSketchI18n, type AppLanguage } from '../../i18n';
 import { validateTrackDocument } from '../../validation';
 import { useEditorRecovery } from '../recovery';
 import { CatalogSvg } from '../rendering';
 import { createEditorStore, type EditorStore } from '../state';
+import { DimensionOverlay } from './DimensionOverlay';
 import styles from './editorWorkspace.module.css';
+import { FabricationPanel } from './FabricationPanel';
 import { ValidationPanel } from './ValidationPanel';
 
 const categoryOrder: readonly CatalogCategory[] = [
@@ -68,6 +75,13 @@ const structureKindByCatalogItemId: Readonly<Record<string, TrackStructure['kind
 const minimumZoom = 0.45;
 const maximumZoom = 1.8;
 const zoomStep = 0.15;
+
+function formatMeasurementValue(value: number, language: AppLanguage): string {
+  return new Intl.NumberFormat(language, {
+    maximumFractionDigits: 2,
+    minimumFractionDigits: 0,
+  }).format(value);
+}
 
 export interface EditorWorkspaceProps {
   initialDocument?: TrackDocumentV1;
@@ -171,16 +185,6 @@ function insertCatalogItem(
       kind: structureKind,
       position,
       parameters,
-      geometry: [
-        {
-          kind: 'line',
-          start: { x: 0, y: 0 },
-          end: {
-            x: item.svgDescriptor.viewBox.width,
-            y: item.svgDescriptor.viewBox.height,
-          },
-        },
-      ],
     });
   }
 
@@ -337,10 +341,12 @@ function LanguageButtons() {
 function Inspector({
   editorStore,
   language,
+  measurement,
   onClose,
 }: {
   editorStore: EditorStore;
   language: AppLanguage;
+  measurement: FabricationElementMeasurement | undefined;
   onClose: () => void;
 }) {
   const { t } = useTranslation();
@@ -451,6 +457,41 @@ function Inspector({
               ))}
             </dl>
           </section>
+
+          {measurement === undefined ? null : (
+            <section aria-labelledby="element-derived-measures-title">
+              <h4 id="element-derived-measures-title">
+                {t('fabrication.selectedMeasurementsTitle')}
+              </h4>
+              <dl className={styles.dimensionList}>
+                <div>
+                  <dt>{t('fabrication.footprint')}</dt>
+                  <dd>
+                    {formatMeasurementValue(measurement.footprint.widthMm, language)} ×{' '}
+                    {formatMeasurementValue(measurement.footprint.depthMm, language)} mm
+                  </dd>
+                </div>
+                <div>
+                  <dt>{t('fabrication.routeLength')}</dt>
+                  <dd>
+                    {measurement.lineLengthMm > 0
+                      ? `${formatMeasurementValue(measurement.lineLengthMm, language)} mm`
+                      : t('fabrication.noRoute')}
+                  </dd>
+                </div>
+                {measurement.radiiMm.length > 0 ? (
+                  <div>
+                    <dt>{t('fabrication.radii')}</dt>
+                    <dd>
+                      {measurement.radiiMm
+                        .map((radius) => `R ${formatMeasurementValue(radius, language)} mm`)
+                        .join(' · ')}
+                    </dd>
+                  </div>
+                ) : null}
+              </dl>
+            </section>
+          )}
 
           {[...item.parameters.normative, ...item.parameters.constructionParameter].length > 0 ? (
             <section aria-labelledby="element-parameters-title">
@@ -568,6 +609,9 @@ export function EditorWorkspace({
   const [query, setQuery] = useState('');
   const [zoom, setZoom] = useState(0.75);
   const [inspectorOpen, setInspectorOpen] = useState(false);
+  const [fabricationOpen, setFabricationOpen] = useState(false);
+  const [dimensionsVisible, setDimensionsVisible] = useState(false);
+  const [wasteRatio, setWasteRatio] = useState(0.1);
   const [activeDragItem, setActiveDragItem] = useState<CatalogItem | null>(null);
   const canvasViewportRef = useRef<HTMLDivElement>(null);
   const { isOver, setNodeRef: setCanvasDropRef } = useDroppable({ id: 'track-canvas' });
@@ -612,6 +656,37 @@ export function EditorWorkspace({
     [activeLevelId, document.structures, document.tiles],
   );
   const validationReport = useMemo(() => validateTrackDocument(document), [document]);
+  const fabricationReport = useMemo(
+    () =>
+      createFabricationReport(document, {
+        wasteRatio,
+        resolveGeometry: (element) => {
+          try {
+            return resolveCatalogGeometry(
+              'catalogItemId' in element ? element.catalogItemId : element.kind,
+              element.parameters,
+            );
+          } catch {
+            return [];
+          }
+        },
+      }),
+    [document, wasteRatio],
+  );
+  const dimensionMeasurements = useMemo(
+    () =>
+      fabricationReport.measurements
+        .filter(({ levelId }) => levelId === activeLevelId)
+        .map((measurement) => ({
+          elementId: measurement.elementId,
+          xMm: measurement.footprint.minXmm,
+          yMm: measurement.footprint.minYmm,
+          widthMm: measurement.footprint.widthMm,
+          heightMm: measurement.footprint.depthMm,
+          radiiMm: measurement.radiiMm,
+        })),
+    [activeLevelId, fabricationReport.measurements],
+  );
 
   const { saveNow, status: recoveryStatus } = useEditorRecovery({
     trackId,
@@ -1002,11 +1077,45 @@ export function EditorWorkspace({
                     +
                   </button>
                   <button
+                    aria-label={t('editor.toggleDimensions')}
+                    aria-pressed={dimensionsVisible}
+                    className={styles.inspectorToggle}
+                    onClick={() => {
+                      setDimensionsVisible((current) => !current);
+                    }}
+                    type="button"
+                  >
+                    ↔
+                  </button>
+                  <button
+                    aria-label={t('editor.toggleFabrication')}
+                    aria-pressed={fabricationOpen}
+                    className={styles.inspectorToggle}
+                    onClick={() => {
+                      setFabricationOpen((current) => {
+                        if (!current) {
+                          setInspectorOpen(false);
+                        }
+
+                        return !current;
+                      });
+                    }}
+                    type="button"
+                  >
+                    ⚒
+                  </button>
+                  <button
                     aria-label={t('editor.toggleInspector')}
                     aria-pressed={inspectorOpen}
                     className={styles.inspectorToggle}
                     onClick={() => {
-                      setInspectorOpen((current) => !current);
+                      setInspectorOpen((current) => {
+                        if (!current) {
+                          setFabricationOpen(false);
+                        }
+
+                        return !current;
+                      });
                     }}
                     type="button"
                   >
@@ -1082,6 +1191,15 @@ export function EditorWorkspace({
                       />
                     );
                   })}
+                  {dimensionsVisible ? (
+                    <DimensionOverlay
+                      canvasHeightMm={document.canvas.heightMm}
+                      canvasWidthMm={document.canvas.widthMm}
+                      language={language}
+                      measurements={dimensionMeasurements}
+                      selectionIds={selectionIds}
+                    />
+                  ) : null}
                 </svg>
               </div>
 
@@ -1089,6 +1207,7 @@ export function EditorWorkspace({
                 onSelectElement={(elementId) => {
                   editorStore.getState().setSelection([elementId]);
                   setInspectorOpen(true);
+                  setFabricationOpen(false);
                 }}
                 report={validationReport}
               />
@@ -1098,9 +1217,22 @@ export function EditorWorkspace({
               <Inspector
                 editorStore={editorStore}
                 language={language}
+                measurement={fabricationReport.measurements.find(
+                  ({ elementId }) => elementId === selectionIds[0],
+                )}
                 onClose={() => {
                   setInspectorOpen(false);
                 }}
+              />
+            ) : null}
+            {fabricationOpen ? (
+              <FabricationPanel
+                language={language}
+                onClose={() => {
+                  setFabricationOpen(false);
+                }}
+                onWasteRatioChange={setWasteRatio}
+                report={fabricationReport}
               />
             ) : null}
           </main>

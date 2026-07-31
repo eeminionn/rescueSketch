@@ -1,0 +1,60 @@
+.dimensionOverlay {
+  pointer-events: none;
+  user-select: none;
+}
+
+.globalDimensions,
+.selectedDimensions {
+  pointer-events: none;
+}
+
+.globalLine,
+.globalTick,
+.elementLine,
+.elementTick,
+.selectionOutline {
+  fill: none;
+  vector-effect: non-scaling-stroke;
+}
+
+.globalLine,
+.globalTick {
+  stroke: var(--rescueSketchDimensionColor, #176b59);
+  stroke-width: 1.5;
+}
+
+.elementLine,
+.elementTick {
+  stroke: var(--rescueSketchSelectionColor, #ef7042);
+  stroke-width: 1.25;
+}
+
+.selectionOutline {
+  stroke: var(--rescueSketchSelectionColor, #ef7042);
+  stroke-dasharray: 6 4;
+  stroke-width: 1.5;
+}
+
+.globalLabel,
+.elementLabel,
+.radiusLabel {
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  font-weight: 760;
+  paint-order: stroke;
+  stroke: var(--rescueSketchDimensionLabelBackground, #fffef9);
+  stroke-linejoin: round;
+  stroke-width: 5px;
+}
+
+.globalLabel {
+  fill: var(--rescueSketchDimensionColor, #176b59);
+}
+
+.elementLabel,
+.radiusLabel {
+  fill: var(--rescueSketchSelectionColor, #ef7042);
+}
+
+.radiusLabel {
+  font-weight: 700;
+}
