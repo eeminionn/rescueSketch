@@ -127,6 +127,33 @@ describe('EditorWorkspace', () => {
     expect(getCanvasElement()?.getAttribute('transform')).toContain('rotate(90)');
   });
 
+  it('shows derived dimensions and the construction report without persisting them', async () => {
+    const user = userEvent.setup();
+    renderEditor();
+
+    await user.click(getAddButton('Línea recta'));
+    await user.click(screen.getByRole('button', { name: 'Mostrar u ocultar cotas' }));
+
+    expect(screen.getByRole('group', { name: 'Cotas de fabricación' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('group', {
+        name: /Elemento straightLine-.+: 300 mm de ancho, 300 mm de alto/u,
+      }),
+    ).toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole('button', { name: 'Mostrar u ocultar informe de fabricación' }),
+    );
+
+    const fabricationPanel = screen.getByRole('complementary', { name: 'Fabricación' });
+    const fabricationSummary = within(fabricationPanel).getByRole('region', {
+      name: 'Resumen de la pista',
+    });
+    expect(within(fabricationSummary).getByText('300 mm')).toBeInTheDocument();
+    expect(within(fabricationPanel).getByText('Línea recta')).toBeInTheDocument();
+    expect(within(fabricationPanel).getByText('× 1')).toBeInTheDocument();
+  });
+
   it('updates the editor and catalog from Spanish to English', async () => {
     const user = userEvent.setup();
     renderEditor();
