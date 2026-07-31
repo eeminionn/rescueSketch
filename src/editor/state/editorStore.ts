@@ -315,6 +315,15 @@ export function createEditorStore(
           [],
         );
       },
+      clearAllElements: () => {
+        const state = get();
+        const hasElements =
+          state.document.tiles.length > 0 ||
+          state.document.structures.length > 0 ||
+          state.document.annotations.length > 0;
+        if (!hasElements) return false;
+        return applyDocument({ ...state.document, tiles: [], structures: [], annotations: [] }, []);
+      },
       rotateSelection: (direction: RotationDirection = 'clockwise') => {
         const state = get();
         return applyDocument(

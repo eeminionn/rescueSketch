@@ -86,6 +86,7 @@ export const translationCatalogs = {
       },
       catalog: {
         categories: {
+          all: 'Todo',
           line: 'Trazado',
           intersection: 'Intersecciones',
           hazard: 'Peligros',
@@ -123,6 +124,11 @@ export const translationCatalogs = {
         duplicate: 'Duplicar',
         rotate: 'Rotar 90 grados',
         delete: 'Eliminar',
+        clearAll: 'Borrar todas las piezas',
+        clearAllConfirm: '¿Borrar todas las piezas de la pista?',
+        canvasSizeTitle: 'Medidas del lienzo',
+        canvasWidth: 'Ancho del lienzo (mm)',
+        canvasHeight: 'Alto del lienzo (mm)',
         levelLabel: 'Nivel',
         addLevel: 'Añadir nivel',
         levelName: 'Nivel {{number}}',
@@ -385,6 +391,7 @@ export const translationCatalogs = {
       },
       catalog: {
         categories: {
+          all: 'All',
           line: 'Line',
           intersection: 'Intersections',
           hazard: 'Hazards',
@@ -422,6 +429,11 @@ export const translationCatalogs = {
         duplicate: 'Duplicate',
         rotate: 'Rotate 90 degrees',
         delete: 'Delete',
+        clearAll: 'Delete all pieces',
+        clearAllConfirm: 'Delete every piece from this track?',
+        canvasSizeTitle: 'Canvas dimensions',
+        canvasWidth: 'Canvas width (mm)',
+        canvasHeight: 'Canvas height (mm)',
         levelLabel: 'Level',
         addLevel: 'Add level',
         levelName: 'Level {{number}}',
